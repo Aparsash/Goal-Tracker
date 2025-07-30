@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گزارش پیشرفت</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>گزارش پیشرفت</h1>
+    <div class="goals-report">
+        {% for goal in goals %}
+        <div class="goal">
+            <h2>{{ goal['title'] }}</h2>
+            <p>هدف کل: {{ goal['total_units'] }} واحد</p>
+            <p>مقدار روزانه: {{ goal['daily_target'] }} واحد</p>
+            <p>پیشرفت کل: {{ goal['progress']|length }} روز</p>
+            <canvas id="chart_{{ goal['id'] }}"></canvas>
+            <script>
+                const ctx = document.getElementById('chart_{{ goal['id'] }}').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [{% for entry in goal['progress'] %}'{{ entry['date'] }}',{% endfor %}],
+                        datasets: [{
+                            label: 'پیشرفت',
+                            data: [{% for entry in goal['progress'] %}{{ entry['value'] }},{% endfor %}],
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
