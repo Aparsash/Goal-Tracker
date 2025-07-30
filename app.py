@@ -11,8 +11,14 @@ def load_goals():
     """بارگیری اهداف از فایل JSON"""
     try:
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            content = f.read()
+            print("Content of goals.json:")
+            print(content)  # چاپ محتوای فایل
+            return json.loads(content)
     except FileNotFoundError:
+        return []
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
         return []
 
 def save_goals(goals):
