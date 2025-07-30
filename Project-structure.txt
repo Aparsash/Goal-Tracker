@@ -1,0 +1,10 @@
+goal_tracker/
+│
+├── app.py          # فایل اصلی Flask
+├── templates/      # فایل‌های HTML
+│   ├── index.html  # صفحه اصلی (فرم ثبت پیشرفت)
+│   └── report.html # صفحه گزارش
+├── static/         # فایل‌های CSS و JS
+│   ├── style.css   # فایل CSS
+│   └── script.js   # فایل جاوااسکریپت
+└── goals.json      # فایل ذخیره‌سازی اهداف و پیشرفت
