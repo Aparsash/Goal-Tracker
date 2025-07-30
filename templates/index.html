@@ -7,18 +7,30 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>ثبت پیشرفت روزانه</h1>
-    <form action="/submit" method="post">
-        {% for goal in goals %}
-        <div class="goal">
-            <h2>{{ goal['title'] }}</h2>
-            <p>هدف کل: {{ goal['total_units'] }} واحد</p>
-            <p>مقدار روزانه: {{ goal['daily_target'] }} واحد</p>
-            <label for="goal_{{ goal['id'] }}">مقدار امروز:</label>
-            <input type="number" step="any" name="{{ goal['id'] }}" id="goal_{{ goal['id'] }}" placeholder="0">
+    <div class="main-container">
+        <div class="index-header">
+            <h1>ثبت پیشرفت روزانه</h1>
         </div>
-        {% endfor %}
-        <button type="submit">ثبت پیشرفت</button>
-    </form>
+        <div class="index-form-container">
+            <form action="/submit" method="post">
+                <!-- استفاده از یک div کانتینر برای گروه‌بندی دوتایی اهداف -->
+                <div class="goals-grid">
+                    {% for goal in goals %}
+                    <div class="goal">
+                        <h2>{{ goal['title'] }}</h2>
+                        <p>هدف کل: {{ goal['total_units'] }} واحد</p>
+                        <p>مقدار روزانه: {{ "%.2f"|format(goal['daily_target']) }} واحد</p>
+                        <label for="goal_{{ goal['id'] }}">مقدار امروز:</label>
+                        <input type="number" step="any" name="{{ goal['id'] }}" id="goal_{{ goal['id'] }}" placeholder="0">
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit">ثبت پیشرفت</button>
+            </form>
+        </div>
+        <div class="index-buttons">
+            <a href="{{ url_for('report') }}" class="report-link">مشاهده گزارش پیشرفت</a>
+        </div>
+    </div>
 </body>
 </html>
