@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "title": "دوره پایتون",
+        "total_units": 50,
+        "target_date": "2024-09-21",
+        "daily_target": 1,
+        "progress": []
+    },
+    {
+        "id": 2,
+        "title": "دوره هوش مصنوعی",
+        "total_units": 20,
+        "target_date": "2024-09-5",
+        "daily_target": 2/3,
+        "progress": []
+    },
+    {
+        "id": 3,
+        "title": "دوره لینکدین و رزومه",
+        "total_units": 33,
+        "target_date": "2024-09-5",
+        "daily_target": 1,
+        "progress": []
+    },
+    {
+        "id": 4,
+        "title": "کتاب «فریب خورده تصادف»",
+        "total_units": 235,
+        "target_date": "2024-08-22",
+        "daily_target": 10,
+        "progress": []
+    }
+]
