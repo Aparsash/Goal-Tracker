@@ -1,74 +1,155 @@
+<!-- templates/report.html -->
 <!DOCTYPE html>
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>گزارش پیشرفت</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Tahoma, Arial, sans-serif; direction: rtl; text-align: center; background-color: #f5f7fa; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #2c3e50; }
+        .goal-card { background-color: white; border: 1px solid #e1e8ed; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: right; }
+        .goal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .goal-title { margin: 0; color: #3498db; }
+        .goal-stats { display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 20px; }
+        .stat-box { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 5px; padding: 10px 15px; margin: 5px; flex: 1; min-width: 120px; text-align: center; }
+        .stat-label { font-size: 0.85em; color: #666; }
+        .stat-value { font-size: 1.1em; font-weight: bold; color: #2c3e50; }
+        .progress-container { margin: 20px 0; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.9em; margin-bottom: 5px; }
+        .progress-bar-background { height: 20px; background-color: #ecf0f1; border-radius: 10px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(to left, #27ae60, #2ecc71); border-radius: 10px; transition: width 0.5s ease-in-out; }
+        .chart-container { height: 200px; margin-top: 20px; }
+        .back-link { display: inline-block; margin-bottom: 20px; padding: 10px 20px; background-color: #3498db; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9em; }
+        .back-link:hover { background-color: #2980b9; }
+        .logout-link { position: absolute; top: 20px; left: 20px; color: #3498db; text-decoration: none; font-size: 0.9em; }
+        .logout-link:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <div class="report-container"> <!-- کانتینر اصلی گزارش -->
-        <div class="report-header">
-            <h1>گزارش پیشرفت</h1>
-        </div>
-        <div class="report-content"> <!-- کانتینر اسکرول‌پذیر نمودارها -->
-            <div class="goals-report">
-                {% for goal in goals %}
-                <div class="report-goal">
-                    <h2>{{ goal['title'] }}</h2>
-                    <p>هدف کل: {{ goal['total_units'] }} واحد</p>
-                    <p>مقدار روزانه: {{ "%.2f"|format(goal['daily_target']) }} واحد</p>
-                    <p>پیشرفت کل: {{ goal['progress']|length }} روز</p>
-                    <div class="chart-container">
-                        <canvas id="chart_{{ goal['id'] }}"></canvas>
+    <div class="container">
+        <a href="{{ url_for('logout') }}" class="logout-link">خروج</a>
+        <h1>📊 گزارش پیشرفت شما</h1>
+        <a href="{{ url_for('index') }}" class="back-link">بازگشت به صفحه اصلی</a>
+
+        {% if goals %}
+            {% for goal in goals %}
+            <div class="goal-card">
+                <div class="goal-header">
+                    <h2 class="goal-title">{{ goal.title }}</h2>
+                </div>
+                
+                <div class="goal-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">هدف کل</div>
+                        <div class="stat-value">{{ goal.total_units }} واحد</div>
                     </div>
-                    <script>
-                        const ctx_{{ goal['id'] }} = document.getElementById('chart_{{ goal['id'] }}').getContext('2d');
-                        const chart_{{ goal['id'] }} = new Chart(ctx_{{ goal['id'] }}, {
-                            type: 'line',
-                            data: {
-                                labels: [{% for entry in goal['progress'] %}'{{ entry['date'] }}',{% endfor %}],
-                                datasets: [{
-                                    label: 'پیشرفت',
-                                    data: [{% for entry in goal['progress'] %}{{ entry['value'] }},{% endfor %}],
-                                    borderColor: 'rgba(52, 152, 219, 1)',
-                                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                                    fill: false,
-                                    tension: 0.3
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        ticks: {
-                                            stepSize: {{ goal['daily_target'] > 0 and goal['daily_target'] or 1 }} // جلوگیری از stepSize 0
-                                        }
+                    <div class="stat-box">
+                        <div class="stat-label">پیشرفت کل</div>
+                        <div class="stat-value">{{ "%.2f"|format(goal.total_progress) }} واحد</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">درصد تکمیل</div>
+                        <div class="stat-value">{{ "%.1f"|format(goal.completion_percentage) }}%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">روزهای فعال</div>
+                        <div class="stat-value">{{ goal.active_days }} روز</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">میانگین روزانه</div>
+                        <div class="stat-value">{{ "%.2f"|format(goal.average_daily_progress) }} واحد</div>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>پیشرفت:</span>
+                        <span>{{ "%.1f"|format(goal.completion_percentage) }}%</span>
+                    </div>
+                    <div class="progress-bar-background">
+                        <div class="progress-bar-fill" style="width: {{ goal.completion_percentage }}%;"></div>
+                    </div>
+                </div>
+
+                {% if goal.progress_entries %}
+                <div class="chart-container">
+                    <canvas id="chart_{{ goal.id }}"></canvas>
+                </div>
+                {% else %}
+                <p style="text-align: center; color: #7f8c8d;">هنوز هیچ پیشرفتی برای این هدف ثبت نشده است.</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <!-- بخش جاوااسکریپت برای همه نمودارها -->
+            <script>
+                {% for goal in goals %}
+                {% if goal.progress_entries %}
+                (function() {
+                    const ctx_{{ goal.id }} = document.getElementById('chart_{{ goal.id }}').getContext('2d');
+                    // مرتب‌سازی داده‌ها بر اساس تاریخ
+                    const sortedEntries = [
+                        {% for entry in goal.progress_entries|sort(attribute='date') %}
+                        { date: '{{ entry.date }}', value: {{ entry.value }} },
+                        {% endfor %}
+                    ];
+                    
+                    const labels = sortedEntries.map(e => e.date);
+                    const data = sortedEntries.map(e => e.value);
+                    
+                    const chart_{{ goal.id }} = new Chart(ctx_{{ goal.id }}, {
+                        type: 'line',
+                        data: {
+                             labels: labels,
+                            datasets: [{
+                                label: 'پیشرفت روزانه',
+                                 data,
+                                borderColor: 'rgba(52, 152, 219, 1)',
+                                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                                fill: false,
+                                tension: 0.2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'مقدار پیشرفت'
                                     }
                                 },
-                                plugins: {
-                                    legend: {
+                                x: {
+                                    title: {
                                         display: true,
-                                        position: 'top',
-                                    },
-                                    tooltip: {
-                                        mode: 'index',
-                                        intersect: false
+                                        text: 'تاریخ'
                                     }
                                 }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false
+                                }
                             }
-                        });
-                    </script>
-                </div>
+                        }
+                    });
+                })();
+                {% endif %}
                 {% endfor %}
-            </div>
-        </div>
-        <div class="report-footer"> <!-- بخش دکمه بازگشت -->
-            <a href="{{ url_for('index') }}" class="report-link">بازگشت به ثبت پیشرفت</a>
-        </div>
+            </script>
+        {% else %}
+            <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
+        {% endif %}
     </div>
 </body>
 </html>

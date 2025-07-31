@@ -102,6 +102,37 @@ def add_goal():
     
     return render_template('add_goal.html', form=form)
 
+# === route جدید برای مشاهده گزارش ===
+@app.route('/report')
+@login_required
+def report():
+    user_goals = current_user.goals
+    
+    # محاسبه آمار برای هر هدف
+    for goal in user_goals:
+        # کل پیشرفت
+        goal.total_progress = sum(entry.value for entry in goal.progress_entries)
+        # درصد تکمیل
+        if goal.total_units > 0:
+            goal.completion_percentage = min(100, (goal.total_progress / goal.total_units) * 100)
+        else:
+            goal.completion_percentage = 0
+        # تعداد روزهای فعال (روزهایی که پیشرفت ثبت شده)
+        goal.active_days = len(goal.progress_entries)
+        # میانگین پیشرفت روزانه
+        if goal.active_days > 0:
+            goal.average_daily_progress = goal.total_progress / goal.active_days
+        else:
+            goal.average_daily_progress = 0
+            
+        # آخرین پیشرفت
+        if goal.progress_entries:
+            goal.last_entry = sorted(goal.progress_entries, key=lambda x: x.date, reverse=True)[0]
+        else:
+            goal.last_entry = None
+
+    return render_template('report.html', goals=user_goals)
+
 # === route جدید برای ثبت پیشرفت ===
 @app.route('/submit_progress/<int:goal_id>', methods=['POST'])
 @login_required

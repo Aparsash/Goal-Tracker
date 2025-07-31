@@ -26,10 +26,14 @@
         .logout-link { position: absolute; top: 20px; left: 20px; color: #3498db; text-decoration: none; font-size: 0.9em; }
         .logout-link:hover { text-decoration: underline; }
         
-        /* استایل لینک افزودن هدف */
-        .add-goal-link {
-            display: inline-block;
+        /* استایل لینک‌های بالای صفحه */
+        .top-links {
+            text-align: center;
             margin-bottom: 20px;
+        }
+        .top-links a {
+            display: inline-block;
+            margin: 0 10px;
             padding: 10px 20px;
             background-color: #3498db;
             color: white;
@@ -37,8 +41,14 @@
             border-radius: 5px;
             font-size: 0.9em;
         }
-        .add-goal-link:hover {
+        .top-links a:hover {
             background-color: #2980b9;
+        }
+        .top-links a.report-link {
+            background-color: #9b59b6;
+        }
+        .top-links a.report-link:hover {
+            background-color: #8e44ad;
         }
     </style>
 </head>
@@ -58,8 +68,11 @@
             {% endif %}
         {% endwith %}
 
-        <!-- لینک برای ایجاد هدف جدید -->
-        <a href="{{ url_for('add_goal') }}" class="add-goal-link">➕ افزودن هدف جدید</a>
+        <!-- لینک‌های بالای صفحه -->
+        <div class="top-links">
+            <a href="{{ url_for('add_goal') }}" class="add-goal-link">➕ افزودن هدف جدید</a>
+            <a href="{{ url_for('report') }}" class="report-link">📊 مشاهده گزارش</a>
+        </div>
 
         {% if goals %}
             {% for goal in goals %}
