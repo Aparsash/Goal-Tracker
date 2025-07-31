@@ -9,7 +9,7 @@
         body { font-family: Tahoma, Arial, sans-serif; direction: rtl; text-align: center; background-color: #f5f7fa; margin: 0; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; }
         h1 { color: #2c3e50; }
-        .goal-card { background-color: white; border: 1px solid #e1e8ed; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: right; }
+        .goal-card { background-color: white; border: 1px solid #e1e8ed; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: right; position: relative; }
         .goal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
         .goal-title { margin: 0; color: #3498db; }
         .goal-details { font-size: 0.9em; color: #555; margin-bottom: 15px; }
@@ -17,8 +17,8 @@
         .form-group { margin-bottom: 10px; text-align: right; }
         label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
         input[type="date"], input[type="number"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 0.9em; direction: ltr; text-align: right; }
-        button { padding: 8px 15px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; }
-        button:hover { background-color: #219653; }
+        button, .btn { padding: 8px 15px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; text-decoration: none; display: inline-block; }
+        button:hover, .btn:hover { background-color: #219653; }
         .flash-messages { margin-bottom: 20px; }
         .flash-message { padding: 10px; border-radius: 5px; margin-bottom: 10px; }
         .flash-message.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -49,6 +49,32 @@
         }
         .top-links a.report-link:hover {
             background-color: #8e44ad;
+        }
+
+        /* استایل دکمه‌های عملیات */
+        .goal-actions {
+            text-align: left;
+            margin-top: 15px;
+        }
+        .goal-actions a {
+            margin-left: 10px;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .goal-actions a:hover {
+            text-decoration: underline;
+        }
+        .goal-actions button {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 0.9em;
+            padding: 0;
+        }
+        .goal-actions button:hover {
+            color: #c0392b;
         }
     </style>
 </head>
@@ -97,6 +123,14 @@
                             <input type="number" id="value_{{ goal.id }}" name="value" step="any" placeholder="0" required>
                         </div>
                         <button type="submit">ثبت پیشرفت</button>
+                    </form>
+                </div>
+
+                <!-- دکمه‌های عملیات -->
+                <div class="goal-actions">
+                    <a href="{{ url_for('edit_goal', goal_id=goal.id) }}">✏️ ویرایش</a>
+                    <form method="POST" action="{{ url_for('delete_goal', goal_id=goal.id) }}" style="display: inline;" onsubmit="return confirm('آیا از حذف این هدف مطمئن هستید؟');">
+                        <button type="submit">🗑️ حذف</button>
                     </form>
                 </div>
             </div>

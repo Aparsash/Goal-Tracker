@@ -102,6 +102,33 @@ def add_goal():
     
     return render_template('add_goal.html', form=form)
 
+# === route جدید برای ویرایش هدف ===
+@app.route('/edit_goal/<int:goal_id>', methods=['GET', 'POST'])
+@login_required
+def edit_goal(goal_id):
+    goal = Goal.query.filter_by(id=goal_id, user_id=current_user.id).first_or_404()
+    form = GoalForm(obj=goal) # پر کردن فرم با اطلاعات فعلی هدف
+    if form.validate_on_submit():
+        goal.title = form.title.data
+        goal.total_units = form.total_units.data
+        goal.daily_target = form.daily_target.data
+        goal.target_date = form.target_date.data
+        db.session.commit()
+        flash(f'هدف "{goal.title}" با موفقیت به‌روزرسانی شد.', 'success')
+        return redirect(url_for('index'))
+    return render_template('edit_goal.html', form=form, goal=goal)
+
+# === route جدید برای حذف هدف ===
+@app.route('/delete_goal/<int:goal_id>', methods=['POST']) # فقط POST
+@login_required
+def delete_goal(goal_id):
+    goal = Goal.query.filter_by(id=goal_id, user_id=current_user.id).first_or_404()
+    goal_title = goal.title
+    db.session.delete(goal)
+    db.session.commit()
+    flash(f'هدف "{goal_title}" با موفقیت حذف شد.', 'success')
+    return redirect(url_for('index'))
+
 # === route جدید برای مشاهده گزارش ===
 @app.route('/report')
 @login_required
