@@ -12,7 +12,7 @@ app = Flask(__name__)
 # === تنظیمات امنیت و دیتابیس ===
 # یه کلید مخفی برای امنیت sessionها. حتماً تو محیط واقعی این رو عوض کن!
 # می‌تونی از python -c "import secrets; print(secrets.token_hex(16))" یه کلید امن بسازی
-app.config['SECRET_KEY'] = 'your-very-secret-key-change-this-in-production' 
+app.config['SECRET_KEY'] = '30662e4a93fe55b325d02a0b0b3cd0ac' 
 # مسیر فایل دیتابیس SQLite. اگه نباشه، خودش می‌سازه.
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "site.db")}'
