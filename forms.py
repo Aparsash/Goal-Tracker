@@ -1,7 +1,8 @@
 # forms.py
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp
+from wtforms import StringField, PasswordField, SubmitField, FloatField, DateField
+from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp, NumberRange
+from datetime import date
 
 class LoginForm(FlaskForm):
     """فرم ورود کاربر"""
@@ -12,7 +13,6 @@ class LoginForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     """فرم ثبت‌نام کاربر"""
     email = StringField('ایمیل', validators=[DataRequired(), Email(), Length(max=120)], render_kw={"placeholder": "example@email.com"})
-    # تغییر اعتبارسنجی رمز عبور برای اجبار به حروف و اعداد
     password = PasswordField('رمز عبور', validators=[
         DataRequired(), 
         Length(min=6),
@@ -27,3 +27,11 @@ class RegistrationForm(FlaskForm):
         render_kw={"placeholder": "رمز عبور خود را دوباره وارد کنید"}
     )
     submit = SubmitField('ثبت‌نام')
+
+# === فرم جدید برای ایجاد هدف ===
+class GoalForm(FlaskForm):
+    title = StringField('عنوان هدف', validators=[DataRequired()], render_kw={"placeholder": "مثلاً: یادگیری پایتون"})
+    total_units = FloatField('تعداد کل واحدها', validators=[DataRequired(), NumberRange(min=0.1, message="تعداد کل واحدها باید بیشتر از صفر باشد.")], render_kw={"placeholder": "مثلاً: 50"})
+    daily_target = FloatField('مقدار هدف روزانه', validators=[DataRequired(), NumberRange(min=0.01, message="مقدار هدف روزانه باید بیشتر از صفر باشد.")], render_kw={"placeholder": "مثلاً: 1"})
+    target_date = DateField('تاریخ پایان هدف', validators=[DataRequired()], default=date.today, format='%Y-%m-%d')
+    submit = SubmitField('ایجاد هدف')

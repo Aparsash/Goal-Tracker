@@ -1,36 +1,96 @@
+<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ثبت پیشرفت</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { font-family: Tahoma, Arial, sans-serif; direction: rtl; text-align: center; background-color: #f5f7fa; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: #2c3e50; }
+        .goal-card { background-color: white; border: 1px solid #e1e8ed; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: right; }
+        .goal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .goal-title { margin: 0; color: #3498db; }
+        .goal-details { font-size: 0.9em; color: #555; margin-bottom: 15px; }
+        .progress-form { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 5px; padding: 15px; margin-top: 15px; }
+        .form-group { margin-bottom: 10px; text-align: right; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
+        input[type="date"], input[type="number"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 0.9em; direction: ltr; text-align: right; }
+        button { padding: 8px 15px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; }
+        button:hover { background-color: #219653; }
+        .flash-messages { margin-bottom: 20px; }
+        .flash-message { padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+        .flash-message.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .flash-message.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .logout-link { position: absolute; top: 20px; left: 20px; color: #3498db; text-decoration: none; font-size: 0.9em; }
+        .logout-link:hover { text-decoration: underline; }
+        
+        /* استایل لینک افزودن هدف */
+        .add-goal-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .add-goal-link:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="index-header">
-            <h1>ثبت پیشرفت روزانه</h1>
-        </div>
-        <div class="index-form-container">
-            <form action="/submit" method="post">
-                <!-- استفاده از یک div کانتینر برای گروه‌بندی دوتایی اهداف -->
-                <div class="goals-grid">
-                    {% for goal in goals %}
-                    <div class="goal">
-                        <h2>{{ goal['title'] }}</h2>
-                        <p>هدف کل: {{ goal['total_units'] }} واحد</p>
-                        <p>مقدار روزانه: {{ "%.2f"|format(goal['daily_target']) }} واحد</p>
-                        <label for="goal_{{ goal['id'] }}">مقدار امروز:</label>
-                        <input type="number" step="any" name="{{ goal['id'] }}" id="goal_{{ goal['id'] }}" placeholder="0">
-                    </div>
+    <div class="container">
+        <a href="{{ url_for('logout') }}" class="logout-link">خروج</a>
+        <h1>ثبت پیشرفت روزانه</h1>
+        
+        <!-- نمایش پیام‌های فلش -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
                     {% endfor %}
                 </div>
-                <button type="submit">ثبت پیشرفت</button>
-            </form>
-        </div>
-        <div class="index-buttons">
-            <a href="{{ url_for('report') }}" class="report-link">مشاهده گزارش پیشرفت</a>
-        </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- لینک برای ایجاد هدف جدید -->
+        <a href="{{ url_for('add_goal') }}" class="add-goal-link">➕ افزودن هدف جدید</a>
+
+        {% if goals %}
+            {% for goal in goals %}
+            <div class="goal-card">
+                <div class="goal-header">
+                    <h2 class="goal-title">{{ goal.title }}</h2>
+                </div>
+                <div class="goal-details">
+                    <p>هدف کل: {{ goal.total_units }} واحد</p>
+                    <p>مقدار روزانه: {{ "%.2f"|format(goal.daily_target) }} واحد</p>
+                </div>
+                
+                <!-- فرم ثبت پیشرفت برای این هدف -->
+                <div class="progress-form">
+                    <form method="POST" action="{{ url_for('submit_progress', goal_id=goal.id) }}">
+                        <div class="form-group">
+                            <label for="date_{{ goal.id }}">تاریخ:</label>
+                            <input type="date" id="date_{{ goal.id }}" name="date" value="{{ today_date }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="value_{{ goal.id }}">مقدار پیشرفت (واحد):</label>
+                            <input type="number" id="value_{{ goal.id }}" name="value" step="any" placeholder="0" required>
+                        </div>
+                        <button type="submit">ثبت پیشرفت</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
+        {% endif %}
     </div>
 </body>
 </html>

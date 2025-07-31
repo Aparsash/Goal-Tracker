@@ -2,8 +2,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-# اضافه کردن واردات فرم‌ها
-from forms import LoginForm, RegistrationForm
+# اضافه کردن واردات فرم‌های جدید
+from forms import LoginForm, RegistrationForm, GoalForm
+# برای کار با تاریخ
+from datetime import date, datetime
 import os
 
 from models import db, User, Goal, ProgressEntry
@@ -29,7 +31,6 @@ def load_user(user_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # اگه کاربر قبلاً لاگین کرده، به صفحه اصلی بره
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     
@@ -39,7 +40,6 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash('با موفقیت وارد شدید.', 'success')
-            # اگه کاربر از صفحه‌ای دیگه اومده بود که نیاز به لاگین داشت، به اون صفحه برگرده
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
@@ -49,18 +49,15 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    # اگه کاربر قبلاً لاگین کرده، به صفحه اصلی بره
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     
     form = RegistrationForm()
     if form.validate_on_submit():
-        # چک کردن تکراری نبودن ایمیل
         existing_user = User.query.filter_by(email=form.email.data).first()
         if existing_user:
             flash('این ایمیل قبلاً ثبت‌نام کرده است.', 'error')
         else:
-            # ساخت کاربر جدید
             user = User(email=form.email.data)
             user.set_password(form.password.data)
             db.session.add(user)
@@ -80,12 +77,78 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html', goals=current_user.goals)
+    # ارسال تاریخ امروز به تمپلیت برای پیش‌فرض قرار دادن در فرم
+    today = date.today().strftime('%Y-%m-%d')
+    return render_template('index.html', goals=current_user.goals, today_date=today)
 
-@app.route('/report')
+# === route جدید برای ایجاد هدف ===
+@app.route('/add_goal', methods=['GET', 'POST'])
 @login_required
-def report():
-    return render_template('report.html', goals=current_user.goals)
+def add_goal():
+    form = GoalForm()
+    if form.validate_on_submit():
+        # ساخت هدف جدید
+        goal = Goal(
+            title=form.title.data,
+            total_units=form.total_units.data,
+            daily_target=form.daily_target.data,
+            target_date=form.target_date.data,
+            user_id=current_user.id  # مالکیت هدف برای کاربر فعلی
+        )
+        db.session.add(goal)
+        db.session.commit()
+        flash(f'هدف "{goal.title}" با موفقیت ایجاد شد.', 'success')
+        return redirect(url_for('index'))
+    
+    return render_template('add_goal.html', form=form)
+
+# === route جدید برای ثبت پیشرفت ===
+@app.route('/submit_progress/<int:goal_id>', methods=['POST'])
+@login_required
+def submit_progress(goal_id):
+    # چک کردن اینکه هدف متعلق به کاربر فعلی هست یا نه
+    goal = Goal.query.filter_by(id=goal_id, user_id=current_user.id).first_or_404()
+    
+    # دریافت داده‌ها از فرم
+    progress_date_str = request.form.get('date')
+    progress_value_str = request.form.get('value')
+    
+    if not progress_date_str or not progress_value_str:
+        flash('لطفاً همه فیلدها را پر کنید.', 'error')
+        return redirect(url_for('index'))
+    
+    try:
+        # تبدیل تاریخ و مقدار
+        progress_date = datetime.strptime(progress_date_str, '%Y-%m-%d').date()
+        progress_value = float(progress_value_str)
+        
+        if progress_value < 0:
+            flash('مقدار پیشرفت نمی‌تواند منفی باشد.', 'error')
+            return redirect(url_for('index'))
+        
+        # چک کردن اینکه آیا قبلاً برای این تاریخ پیشرفت ثبت شده یا نه
+        existing_entry = ProgressEntry.query.filter_by(goal_id=goal.id, date=progress_date).first()
+        if existing_entry:
+            # اگه قبلاً ثبت شده، مقدار رو آپدیت کن
+            existing_entry.value = progress_value
+            flash(f'پیشرفت برای تاریخ {progress_date_str} آپدیت شد.', 'success')
+        else:
+            # اگه قبلاً ثبت نشده، یه رکورد جدید بساز
+            new_entry = ProgressEntry(date=progress_date, value=progress_value, goal_id=goal.id)
+            db.session.add(new_entry)
+            flash(f'پیشرفت برای تاریخ {progress_date_str} ثبت شد.', 'success')
+        
+        db.session.commit()
+        
+    except ValueError:
+        flash('فرمت تاریخ یا مقدار پیشرفت اشتباه است.', 'error')
+    except Exception as e:
+        db.session.rollback()
+        flash('خطایی در ثبت پیشرفت رخ داده است.', 'error')
+        # می‌تونی این خطا رو لاگ کنی برای دیباگ بیشتر
+    
+    return redirect(url_for('index'))
+
 
 # === ساخت جداول دیتابیس ===
 with app.app_context():
