@@ -19,7 +19,7 @@
             <div class="card-header report-header">
                 <h2 class="card-title report-title">{{ goal.title }}</h2>
             </div>
-            
+
             <div class="stats-grid mb-20"> <!-- Using grid for stats -->
                 <div class="stat-box">
                     <div class="stat-label">هدف کل</div>
@@ -97,11 +97,11 @@
                 // Create chart
                 new Chart(ctx, {
                     type: 'line',
-                    data: { // اصلاح: اضافه کردن 'data:'
+                    data: {
                         labels: labels,
                         datasets: [{
                             label: 'پیشرفت روزانه',
-                            data: values, // اصلاح: تغییر از 'values' به 'data: values'
+                             data: values, // Corrected to use 'data'
                             borderColor: colors.lineColor, // Use defined color
                             backgroundColor: colors.fillColor, // Use defined color
                             fill: true,

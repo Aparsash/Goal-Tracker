@@ -21,13 +21,13 @@
     --error-text: #721c24;         /* Error message text */
     --error-border: #f5c6cb;       /* Error message border */
     /* Component Specific Colors */
-    --btn-primary-bg: var(--primary-color); /* اصلاح: تعریف متغیر گمشده */
-    --btn-primary-hover-bg: var(--primary-light); /* اصلاح: تعریف متغیر گمشده */
+    --btn-primary-bg: var(--primary-color);
+    --btn-primary-hover-bg: var(--primary-light);
     --btn-success-bg: #27ae60;
     --btn-success-hover-bg: #219653;
     --btn-danger-bg: #e74c3c;
     --btn-danger-hover-bg: #c0392b;
-    --progress-bar-fill: linear-gradient(to left, var(--primary-color), var(--primary-light)); /* اصلاح: تعریف متغیر گمشده */
+    --progress-bar-fill: linear-gradient(to left, var(--primary-color), var(--primary-light));
     --chart-line-color: var(--primary-color);
     --chart-fill-color: rgba(10, 186, 181, 0.1); /* var(--primary-color) with opacity */
 }
@@ -52,13 +52,13 @@
     --error-bg: #5a2d2d;
     --error-text: #f8d7da;
     --error-border: #a73d3d;
-    --btn-primary-bg: var(--primary-color); /* اصلاح: تعریف متغیر گمشده */
-    --btn-primary-hover-bg: var(--primary-light); /* اصلاح: تعریف متغیر گمشده */
+    --btn-primary-bg: var(--primary-color);
+    --btn-primary-hover-bg: var(--primary-light);
     --btn-success-bg: #27ae60;
     --btn-success-hover-bg: #219653;
     --btn-danger-bg: #e74c3c;
     --btn-danger-hover-bg: #c0392b;
-    --progress-bar-fill: linear-gradient(to right, var(--primary-color), var(--primary-light)); /* Flipped for example */ /* اصلاح: تعریف متغیر گمشده */
+    --progress-bar-fill: linear-gradient(to right, var(--primary-color), var(--primary-light)); /* Flipped for example */
     --chart-line-color: var(--primary-color);
     --chart-fill-color: rgba(10, 186, 181, 0.2); /* var(--primary-color) with opacity */
 }
@@ -104,11 +104,11 @@ button, .btn, input[type="submit"], input[type="button"] {
     text-align: center; /* Center text in buttons */
 }
 .btn-primary, button[type="submit"]:not(.btn-danger), button:not(.btn-danger):not([type="button"]) {
-    background-color: var(--btn-primary-bg); /* اصلاح: استفاده از متغیر تعریف‌شده */
+    background-color: var(--btn-primary-bg);
     color: white;
 }
 .btn-primary:hover, button[type="submit"]:not(.btn-danger):hover, button:not(.btn-danger):not([type="button"]):hover {
-    background-color: var(--btn-primary-hover-bg); /* اصلاح: استفاده از متغیر تعریف‌شده */
+    background-color: var(--btn-primary-hover-bg);
     transform: translateY(-2px);
 }
 .btn-success {
@@ -254,7 +254,7 @@ input:focus, select:focus, textarea:focus {
 }
 .progress-bar-fill {
     height: 100%;
-    background: var(--progress-bar-fill); /* اصلاح: استفاده از متغیر تعریف‌شده */
+    background: var(--progress-bar-fill);
     border-radius: 12px; /* Match background rounding */
     transition: width 0.5s ease-in-out;
     min-width: 25px; /* Minimum width to show some progress */
@@ -376,4 +376,33 @@ input:focus, select:focus, textarea:focus {
     margin-bottom: 20px; /* Margin from the content below */
     border-radius: 5px; /* Rounded corners */
     box-shadow: 0 2px 5px var(--shadow-color); /* Small shadow */
+}
+/* === Stats Grid === */
+.stats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.stat-box {
+    flex: 1 1 calc(20% - 15px);
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    transition: box-shadow 0.3s ease;
+}
+.stat-box:hover {
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+.stat-label {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+.stat-value {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--text-primary);
 }
