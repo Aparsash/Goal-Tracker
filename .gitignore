@@ -13,3 +13,6 @@ instance/
 
 # Database
 site.db
+
+#ّFonts 
+static/fonts/
