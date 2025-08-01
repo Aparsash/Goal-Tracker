@@ -3,11 +3,9 @@
 
 {% block title %}گزارش پیشرفت{% endblock %}
 {% block header %}📊 گزارش پیشرفت شما{% endblock %}
-
 {% block extra_head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
-
 {% block content %}
     <!-- Sticky Button Bar -->
     <div class="sticky-button-bar">
@@ -99,11 +97,11 @@
                 // Create chart
                 new Chart(ctx, {
                     type: 'line',
-                     {
-                         labels: labels,
+                    data: { // اصلاح: اضافه کردن 'data:'
+                        labels: labels,
                         datasets: [{
                             label: 'پیشرفت روزانه',
-                             values,
+                            data: values, // اصلاح: تغییر از 'values' به 'data: values'
                             borderColor: colors.lineColor, // Use defined color
                             backgroundColor: colors.fillColor, // Use defined color
                             fill: true,
