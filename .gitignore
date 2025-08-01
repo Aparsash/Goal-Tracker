@@ -1,1 +1,19 @@
 myproject_env/
+Project-structure.txt
+ColorCodes.txt
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask stuff
+instance/
+.env
+
+# Database
+site.db
+
+#ّFonts 
+static/fonts/
