@@ -3,26 +3,26 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# === تعریف db به صورت placeholder ===
+# === Define db as a placeholder ===
 db = SQLAlchemy()
 
 class User(db.Model, UserMixin):
-    """مدل کاربر"""
+    """User model"""
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     
-    # رابطه یک به چند با Goal
+    # One-to-many relationship with Goal
     goals = db.relationship('Goal', backref='owner', lazy=True, cascade="all, delete-orphan")
 
     def set_password(self, password):
-        """رمز عبور رو هش می‌کنه و ذخیره می‌کنه."""
+        """Hash and store the password"""
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        """چک می‌کنه رمز وارد شده درست هست یا نه."""
+        """Check if the entered password is correct"""
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
@@ -30,7 +30,7 @@ class User(db.Model, UserMixin):
 
 
 class Goal(db.Model):
-    """مدل هدف"""
+    """Goal model"""
     __tablename__ = 'goals'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -39,10 +39,10 @@ class Goal(db.Model):
     target_date = db.Column(db.Date, nullable=False)
     daily_target = db.Column(db.Float, nullable=False)
     
-    # Foreign Key به User
+    # Foreign Key to User
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     
-    # رابطه یک به چند با ProgressEntry
+    # One-to-many relationship with ProgressEntry
     progress_entries = db.relationship('ProgressEntry', backref='goal', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
@@ -50,14 +50,14 @@ class Goal(db.Model):
 
 
 class ProgressEntry(db.Model):
-    """مدل پیشرفت روزانه"""
+    """Daily progress entry model"""
     __tablename__ = 'progress_entries'
     
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
     value = db.Column(db.Float, nullable=False)
     
-    # Foreign Key به Goal
+    # Foreign Key to Goal
     goal_id = db.Column(db.Integer, db.ForeignKey('goals.id'), nullable=False)
 
     def __repr__(self):

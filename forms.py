@@ -28,8 +28,9 @@ class RegistrationForm(FlaskForm):
     )
     submit = SubmitField('ثبت‌نام')
 
-# === فرم جدید برای ایجاد/ویرایش هدف ===
+# === Form for creating/editing goals ===
 class GoalForm(FlaskForm):
+    """Form for creating or editing a goal"""
     title = StringField('عنوان هدف', validators=[DataRequired()], render_kw={"placeholder": "مثلاً: یادگیری پایتون"})
     total_units = FloatField('تعداد کل واحدها', validators=[DataRequired(), NumberRange(min=0.1, message="تعداد کل واحدها باید بیشتر از صفر باشد.")], render_kw={"placeholder": "مثلاً: 50"})
     daily_target = FloatField('مقدار هدف روزانه', validators=[DataRequired(), NumberRange(min=0.01, message="مقدار هدف روزانه باید بیشتر از صفر باشد.")], render_kw={"placeholder": "مثلاً: 1"})
