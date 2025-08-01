@@ -1,5 +1,4 @@
 /* static/style.css */
-
 /* === Light Mode Theme (Default) === */
 :root {
     /* Primary Colors */
@@ -7,7 +6,6 @@
     --primary-light: #56DFCF;      /* Lighter teal-blue */
     --primary-lighter: #ADEED9;    /* Very light teal-blue */
     --primary-bg: #FFEDF3;         /* Very light pink (for specific backgrounds) */
-
     /* Neutral Colors */
     --bg-main: #f5f7fa;             /* Main background */
     --bg-card: #ffffff;            /* Card background */
@@ -22,7 +20,6 @@
     --error-bg: #f8d7da;           /* Error message background */
     --error-text: #721c24;         /* Error message text */
     --error-border: #f5c6cb;       /* Error message border */
-
     /* Component Specific Colors */
     --btn-primary-bg: var(--primary-color);
     --btn-primary-hover-bg: var(--primary-light);
@@ -34,7 +31,6 @@
     --chart-line-color: var(--primary-color);
     --chart-fill-color: rgba(10, 186, 181, 0.1); /* var(--primary-color) with opacity */
 }
-
 /* === Dark Mode Theme (Placeholder) === */
 /* Colors will be defined here later */
 [data-theme="dark"] {
@@ -66,7 +62,6 @@
     --chart-line-color: var(--primary-color);
     --chart-fill-color: rgba(10, 186, 181, 0.2); /* var(--primary-color) with opacity */
 }
-
 /* === Global Body Styles === */
 body {
     font-family: 'Parastoo', Tahoma, Arial, sans-serif;
@@ -77,30 +72,25 @@ body {
     margin: 0;
     padding: 20px;
 }
-
 /* === Layout & Containers === */
 .container {
     max-width: 1000px; /* Increased max-width for better spacing */
     margin: 0 auto;
     padding: 0 15px; /* Add padding for smaller screens */
 }
-
 /* === Headings === */
 h1 {
     color: var(--primary-color);
     margin-bottom: 20px;
 }
-
 /* === Links & Buttons === */
 a {
     color: var(--primary-color);
     text-decoration: none;
 }
-
 a:hover {
     text-decoration: underline;
 }
-
 button, .btn, input[type="submit"], input[type="button"] {
     padding: 10px 20px;
     border: none;
@@ -113,41 +103,33 @@ button, .btn, input[type="submit"], input[type="button"] {
     text-decoration: none; /* For links styled as buttons */
     text-align: center; /* Center text in buttons */
 }
-
 .btn-primary, button[type="submit"]:not(.btn-danger), button:not(.btn-danger):not([type="button"]) {
     background-color: var(--btn-primary-bg);
     color: white;
 }
-
 .btn-primary:hover, button[type="submit"]:not(.btn-danger):hover, button:not(.btn-danger):not([type="button"]):hover {
     background-color: var(--btn-primary-hover-bg);
     transform: translateY(-2px);
 }
-
 .btn-success {
     background-color: var(--btn-success-bg);
     color: white;
 }
-
 .btn-success:hover {
     background-color: var(--btn-success-hover-bg);
     transform: translateY(-2px);
 }
-
 .btn-danger, button[type="submit"].btn-danger {
     background-color: var(--btn-danger-bg);
     color: white;
 }
-
 .btn-danger:hover, button[type="submit"].btn-danger:hover {
     background-color: var(--btn-danger-hover-bg);
     transform: translateY(-2px);
 }
-
 button:active, .btn:active {
     transform: translateY(0);
 }
-
 /* Logout Link */
 .logout-link {
     position: absolute;
@@ -156,24 +138,20 @@ button:active, .btn:active {
     color: var(--primary-color);
     font-size: 0.9em;
 }
-
 /* === Forms & Inputs === */
 form {
     text-align: right; /* RTL form alignment */
 }
-
 .form-group {
     margin-bottom: 20px;
     text-align: right; /* Ensure labels/inputs align correctly within group */
 }
-
 label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
     color: var(--text-primary);
 }
-
 input[type="email"], input[type="password"], input[type="text"], input[type="number"], input[type="date"], select, textarea {
     width: 100%;
     padding: 12px;
@@ -185,42 +163,35 @@ input[type="email"], input[type="password"], input[type="text"], input[type="num
     background-color: var(--bg-card); /* Input background matches card */
     color: var(--text-primary);
 }
-
 input[type="number"], input[type="date"] {
     direction: ltr;
     text-align: right;
 }
-
 /* Focus state for inputs */
 input:focus, select:focus, textarea:focus {
     outline: 2px solid var(--primary-light);
     border-color: var(--primary-light);
 }
-
 /* === Flash Messages === */
 .flash-messages {
     margin-bottom: 25px;
 }
-
 .flash-message {
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 15px;
     text-align: right; /* RTL message alignment */
 }
-
 .flash-message.success {
     background-color: var(--success-bg);
     color: var(--success-text);
     border: 1px solid var(--success-border);
 }
-
 .flash-message.error {
     background-color: var(--error-bg);
     color: var(--error-text);
     border: 1px solid var(--error-border);
 }
-
 /* === Cards & Panels === */
 .card, .goal-card, .report-card {
     background-color: var(--bg-card);
@@ -232,11 +203,9 @@ input:focus, select:focus, textarea:focus {
     text-align: right; /* RTL card content */
     transition: box-shadow 0.3s ease;
 }
-
 .card:hover, .goal-card:hover, .report-card:hover {
     box-shadow: 0 4px 12px var(--shadow-color);
 }
-
 .card-header, .goal-header, .report-header {
     display: flex;
     justify-content: space-between;
@@ -245,36 +214,30 @@ input:focus, select:focus, textarea:focus {
     padding-bottom: 15px;
     margin-bottom: 20px;
 }
-
 .card-title, .goal-title, .report-title {
     margin: 0;
     color: var(--primary-color);
     font-size: 1.3em; /* Slightly larger title */
 }
-
 /* === Lists & Details === */
 .list-unstyled {
     list-style: none;
     padding: 0;
     margin: 0;
 }
-
 .detail-item {
     margin-bottom: 10px;
     font-size: 0.95em;
     color: var(--text-secondary);
 }
-
 .detail-label {
     font-weight: bold;
     color: var(--text-primary);
 }
-
 /* === Progress Bars === */
 .progress-container {
     margin: 25px 0;
 }
-
 .progress-label {
     display: flex;
     justify-content: space-between;
@@ -282,7 +245,6 @@ input:focus, select:focus, textarea:focus {
     margin-bottom: 8px;
     color: var(--text-secondary);
 }
-
 .progress-bar-background {
     height: 25px;
     background-color: #ecf0f1; /* Light gray background */
@@ -290,7 +252,6 @@ input:focus, select:focus, textarea:focus {
     overflow: hidden;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
-
 .progress-bar-fill {
     height: 100%;
     background: var(--progress-bar-fill);
@@ -305,20 +266,17 @@ input:focus, select:focus, textarea:focus {
     font-weight: bold;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.5); /* Text shadow for readability */
 }
-
 /* === Charts (Canvas) === */
 .chart-container {
     height: 250px; /* Set a fixed height for charts */
     margin-top: 25px;
     position: relative; /* Needed for chart positioning */
 }
-
 /* === Navigation Links (Top) === */
 .top-nav {
     text-align: center;
     margin-bottom: 30px;
 }
-
 .top-nav a {
     display: inline-block;
     margin: 0 10px 10px 10px; /* RTL margin adjustment */
@@ -330,31 +288,25 @@ input:focus, select:focus, textarea:focus {
     font-size: 1em;
     transition: background-color 0.3s ease;
 }
-
 .top-nav a:hover {
     background-color: var(--primary-light);
     text-decoration: none;
 }
-
 .top-nav a.report-link {
     background-color: #9b59b6; /* Purple for report link */
 }
-
 .top-nav a.report-link:hover {
     background-color: #8e44ad; /* Darker purple on hover */
 }
-
 /* === Action Buttons (Edit/Delete) === */
 .actions {
     text-align: left; /* Align actions to the left (RTL) */
     margin-top: 20px;
 }
-
 .actions a, .actions button {
     margin-left: 15px; /* Space between action items (RTL) */
     font-size: 0.95em;
 }
-
 .actions button.btn-danger {
     background: none;
     border: none;
@@ -363,68 +315,65 @@ input:focus, select:focus, textarea:focus {
     padding: 0;
     text-decoration: underline;
 }
-
 .actions button.btn-danger:hover {
     color: var(--btn-danger-hover-bg);
     background: none;
     transform: none; /* Remove transform for danger link buttons */
 }
-
 /* === Utility Classes === */
 .text-center {
     text-align: center;
 }
-
 .text-right {
     text-align: right; /* Explicitly set for RTL */
 }
-
 .mb-20 {
     margin-bottom: 20px;
 }
-
 .mt-20 {
     margin-top: 20px;
 }
-
 .d-flex {
     display: flex;
 }
-
 .justify-content-between {
     justify-content: space-between;
 }
-
 .align-items-center {
     align-items: center;
 }
-
 .w-100 {
     width: 100%;
 }
-
 /* === Responsive Adjustments === */
 @media (max-width: 768px) {
     .container {
         padding: 0 10px;
     }
-
     .card, .goal-card, .report-card {
         padding: 20px;
     }
-
     .top-nav a {
         display: block;
         margin: 5px auto;
         width: 90%;
     }
-
     .actions {
         text-align: center; /* Center actions on small screens */
     }
-
     .actions a, .actions button {
         margin: 5px;
         display: inline-block;
     }
+}
+/* === Sticky Button Bar === */
+.sticky-button-bar {
+    position: sticky;
+    top: 20px; /* Distance from the top */
+    z-index: 1000; /* Make sure it's on top of other elements */
+    background-color: var(--bg-main); /* Background color to cover content behind */
+    padding: 10px 0; /* Inner padding */
+    margin-bottom: 20px; /* Margin from the content below */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 5px var(--shadow-color); /* Small shadow */
 }

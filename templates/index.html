@@ -1,76 +1,55 @@
 <!-- templates/index.html -->
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ثبت پیشرفت</title>
-    <!-- Load Parastoo font from local files -->
-    <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" type="text/css" />
-    <!-- Load custom styles -->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
-    
-</head>
-<body data-theme="light">
-    <div class="container">
-        <a href="{{ url_for('logout') }}" class="logout-link">خروج</a>
-        <h1>ثبت پیشرفت روزانه</h1>
-        
-        <!-- نمایش پیام‌های فلش -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash-message {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+{% extends "base.html" %}
 
-        <!-- لینک‌های بالای صفحه -->
-        <div class="top-links">
+{% block title %}ثبت پیشرفت{% endblock %}
+{% block header %}ثبت پیشرفت روزانه{% endblock %}
+
+{% block content %}
+    <!-- Sticky Button Bar -->
+    <div class="sticky-button-bar">
+        <div class="top-nav">
             <a href="{{ url_for('add_goal') }}" class="add-goal-link">➕ افزودن هدف جدید</a>
             <a href="{{ url_for('report') }}" class="report-link">📊 مشاهده گزارش</a>
         </div>
-
-        {% if goals %}
-            {% for goal in goals %}
-            <div class="goal-card">
-                <div class="goal-header">
-                    <h2 class="goal-title">{{ goal.title }}</h2>
-                </div>
-                <div class="goal-details">
-                    <p>هدف کل: {{ goal.total_units }} واحد</p>
-                    <p>مقدار روزانه: {{ "%.2f"|format(goal.daily_target) }} واحد</p>
-                </div>
-                
-                <!-- فرم ثبت پیشرفت برای این هدف -->
-                <div class="progress-form">
-                    <form method="POST" action="{{ url_for('submit_progress', goal_id=goal.id) }}">
-                        <div class="form-group">
-                            <label for="date_{{ goal.id }}">تاریخ:</label>
-                            <input type="date" id="date_{{ goal.id }}" name="date" value="{{ today_date }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="value_{{ goal.id }}">مقدار پیشرفت (واحد):</label>
-                            <input type="number" id="value_{{ goal.id }}" name="value" step="any" placeholder="0" required>
-                        </div>
-                        <button type="submit">ثبت پیشرفت</button>
-                    </form>
-                </div>
-
-                <!-- دکمه‌های عملیات -->
-                <div class="actions">
-                    <a href="{{ url_for('edit_goal', goal_id=goal.id) }}" class="btn btn-secondary">✏️ ویرایش</a>
-                    <form method="POST" action="{{ url_for('delete_goal', goal_id=goal.id) }}" style="display: inline;" onsubmit="return confirm('آیا از حذف این هدف مطمئن هستید؟');">
-                        <button type="submit" class="btn btn-danger">🗑️ حذف</button>
-                    </form>
-                </div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
-        {% endif %}
     </div>
-</body>
-</html>
+    <!-- End Sticky Button Bar -->
+
+    {% if goals %}
+        {% for goal in goals %}
+        <div class="card goal-card">
+            <div class="card-header goal-header">
+                <h2 class="card-title goal-title">{{ goal.title }}</h2>
+            </div>
+            <div class="goal-details">
+                <p>هدف کل: {{ goal.total_units }} واحد</p>
+                <p>مقدار روزانه: {{ "%.2f"|format(goal.daily_target) }} واحد</p>
+            </div>
+            
+            <!-- فرم ثبت پیشرفت برای این هدف -->
+            <div class="progress-form">
+                <form method="POST" action="{{ url_for('submit_progress', goal_id=goal.id) }}">
+                    <div class="form-group">
+                        <label for="date_{{ goal.id }}">تاریخ:</label>
+                        <input type="date" id="date_{{ goal.id }}" name="date" value="{{ today_date }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="value_{{ goal.id }}">مقدار پیشرفت (واحد):</label>
+                        <input type="number" id="value_{{ goal.id }}" name="value" step="any" placeholder="0" required>
+                    </div>
+                    <button type="submit">ثبت پیشرفت</button>
+                </form>
+            </div>
+
+            <!-- دکمه‌های عملیات -->
+            <div class="actions">
+                <a href="{{ url_for('edit_goal', goal_id=goal.id) }}">✏️ ویرایش</a>
+                <form method="POST" action="{{ url_for('delete_goal', goal_id=goal.id) }}" style="display: inline;" onsubmit="return confirm('آیا از حذف این هدف مطمئن هستید؟');">
+                    <button type="submit">🗑️ حذف</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
+    {% endif %}
+{% endblock %}

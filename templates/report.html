@@ -1,227 +1,185 @@
 <!-- templates/report.html -->
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>گزارش پیشرفت</title>
-    <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
+{% extends "base.html" %}
+
+{% block title %}گزارش پیشرفت{% endblock %}
+{% block header %}📊 گزارش پیشرفت شما{% endblock %}
+
+{% block extra_head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Layout for statistics boxes */
-        .stats-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .stat-box {
-            flex: 1 1 calc(20% - 15px);
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 8px var(--shadow-color);
-        }
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-        .stat-value {
-            color: var(--text-primary);
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-        @media (max-width: 768px) {
-            .stat-box {
-                flex: 1 1 calc(50% - 15px);
-            }
-        }
-        @media (max-width: 480px) {
-            .stat-box {
-                flex: 1 1 100%;
-            }
-        }
-    </style>
-</head>
-<body data-theme="light">
-    <div class="container">
-        <a href="{{ url_for('logout') }}" class="logout-link">خروج</a>
-        <h1>📊 گزارش پیشرفت شما</h1>
+{% endblock %}
+
+{% block content %}
+    <!-- Sticky Button Bar -->
+    <div class="sticky-button-bar">
         <a href="{{ url_for('index') }}" class="btn mt-20 mb-20">بازگشت به صفحه اصلی</a>
+    </div>
+    <!-- End Sticky Button Bar -->
 
-        {% if goals %}
-            {% for goal in goals %}
-            <div class="card report-card">
-                <div class="card-header report-header">
-                    <h2 class="card-title report-title">{{ goal.title }}</h2>
-                </div>
-
-                <!-- Statistics section -->
-                <div class="stats-grid mb-20">
-                    <div class="stat-box">
-                        <div class="stat-label">هدف کل</div>
-                        <div class="stat-value">{{ goal.total_units }} واحد</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">پیشرفت کل</div>
-                        <div class="stat-value">{{ "%.2f"|format(goal.total_progress) }} واحد</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">درصد تکمیل</div>
-                        <div class="stat-value">{{ "%.1f"|format(goal.completion_percentage) }}%</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">روزهای فعال</div>
-                        <div class="stat-value">{{ goal.active_days }} روز</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">میانگین روزانه</div>
-                        <div class="stat-value">{{ "%.2f"|format(goal.average_daily_progress) }} واحد</div>
-                    </div>
-                </div>
-
-                <!-- Progress bar -->
-                <div class="progress-container">
-                    <div class="progress-label">
-                        <span>پیشرفت:</span>
-                        <span>{{ "%.1f"|format(goal.completion_percentage) }}%</span>
-                    </div>
-                    <div class="progress-bar-background">
-                        <div class="progress-bar-fill" style="width: {{ goal.completion_percentage }}%;"></div>
-                    </div>
-                </div>
-
-                <!-- Chart container -->
-                {% if goal.progress_entries %}
-                <div class="chart-container">
-                    <canvas id="chart_{{ goal.id }}"></canvas>
-                </div>
-                {% else %}
-                <p class="text-center text-placeholder">هنوز هیچ پیشرفتی برای این هدف ثبت نشده است.</p>
-                {% endif %}
+    {% if goals %}
+        {% for goal in goals %}
+        <div class="card report-card">
+            <div class="card-header report-header">
+                <h2 class="card-title report-title">{{ goal.title }}</h2>
             </div>
-            {% endfor %}
+            
+            <div class="stats-grid mb-20"> <!-- Using grid for stats -->
+                <div class="stat-box">
+                    <div class="stat-label">هدف کل</div>
+                    <div class="stat-value">{{ goal.total_units }} واحد</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">پیشرفت کل</div>
+                    <div class="stat-value">{{ "%.2f"|format(goal.total_progress) }} واحد</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">درصد تکمیل</div>
+                    <div class="stat-value">{{ "%.1f"|format(goal.completion_percentage) }}%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">روزهای فعال</div>
+                    <div class="stat-value">{{ goal.active_days }} روز</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">میانگین روزانه</div>
+                    <div class="stat-value">{{ "%.2f"|format(goal.average_daily_progress) }} واحد</div>
+                </div>
+            </div>
 
-            <!-- Chart.js rendering -->
-            <script>
-                // Define theme colors (should match :root in style.css)
-                const themeColors = {
-                    light: {
-                        lineColor: '#0ABAB5', // --primary-color
-                        fillColor: 'rgba(10, 186, 181, 0.1)', // --chart-fill-color
-                        textColor: '#2c3e50', // --text-primary
-                        borderColor: '#e1e8ed' // --border-color
-                    }
-                };
-                // Get current theme (assuming 'light' for now)
-                const currentTheme = 'light'; // You can dynamically get this from body.dataset.theme if needed
-                const colors = themeColors[currentTheme];
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>پیشرفت:</span>
+                    <span>{{ "%.1f"|format(goal.completion_percentage) }}%</span>
+                </div>
+                <div class="progress-bar-background">
+                    <div class="progress-bar-fill" style="width: {{ goal.completion_percentage }}%;"></div>
+                </div>
+            </div>
 
-                {% for goal in goals %}
-                {% if goal.progress_entries %}
-                (function() {
-                    const ctx = document.getElementById('chart_{{ goal.id }}').getContext('2d');
+            {% if goal.progress_entries %}
+            <div class="chart-container">
+                <canvas id="chart_{{ goal.id }}"></canvas>
+            </div>
+            {% else %}
+            <p class="text-center text-placeholder">هنوز هیچ پیشرفتی برای این هدف ثبت نشده است.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
 
-                    // Sort entries by date
-                    const sortedEntries = [
-                        {% for entry in goal.progress_entries|sort(attribute='date') %}
-                        { date: '{{ entry.date }}', value: {{ entry.value }} },
-                        {% endfor %}
-                    ];
+        <!-- JavaScript section for all charts -->
+        <script>
+            // Define theme colors (should match :root in style.css)
+            const themeColors = {
+                light: {
+                    lineColor: '#0ABAB5', // --primary-color
+                    fillColor: 'rgba(10, 186, 181, 0.1)', // --chart-fill-color
+                    textColor: '#2c3e50', // --text-primary
+                    borderColor: '#e1e8ed' // --border-color
+                }
+            };
+            // Get current theme (assuming 'light' for now)
+            const currentTheme = 'light'; // You can dynamically get this from body.dataset.theme if needed
+            const colors = themeColors[currentTheme];
 
-                    // Extract labels and values
-                    const labels = sortedEntries.map(e => e.date);
-                    const values = sortedEntries.map(e => e.value);
+            {% for goal in goals %}
+            {% if goal.progress_entries %}
+            (function() {
+                const ctx = document.getElementById('chart_{{ goal.id }}').getContext('2d');
 
-                    // Create chart
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'پیشرفت روزانه',
-                                data: values,
-                                borderColor: colors.lineColor, // Use defined color
-                                backgroundColor: colors.fillColor, // Use defined color
-                                fill: true,
-                                tension: 0.2,
-                                borderWidth: 2,
-                                pointRadius: 3,
-                                pointHoverRadius: 5
-                            }]
+                // Sort entries by date
+                const sortedEntries = [
+                    {% for entry in goal.progress_entries|sort(attribute='date') %}
+                    { date: '{{ entry.date }}', value: {{ entry.value }} },
+                    {% endfor %}
+                ];
+
+                // Extract labels and values
+                const labels = sortedEntries.map(e => e.date);
+                const values = sortedEntries.map(e => e.value);
+
+                // Create chart
+                new Chart(ctx, {
+                    type: 'line',
+                     {
+                         labels: labels,
+                        datasets: [{
+                            label: 'پیشرفت روزانه',
+                             values,
+                            borderColor: colors.lineColor, // Use defined color
+                            backgroundColor: colors.fillColor, // Use defined color
+                            fill: true,
+                            tension: 0.2,
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            interaction: {
-                                mode: 'index',
-                                intersect: false
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: 'مقدار پیشرفت',
-                                        color: colors.textColor // Use defined color
-                                    },
-                                    grid: {
-                                        color: 'rgba(0, 0, 0, 0.05)',
-                                        drawBorder: true,
-                                        drawOnChartArea: true,
-                                        drawTicks: true
-                                    }
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'مقدار پیشرفت',
+                                    color: colors.textColor // Use defined color
                                 },
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'تاریخ',
-                                        color: colors.textColor // Use defined color
-                                    },
-                                    grid: {
-                                        color: 'rgba(0, 0, 0, 0.02)',
-                                        drawBorder: true,
-                                        drawOnChartArea: false,
-                                        drawTicks: true
-                                    }
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)',
+                                    drawBorder: true,
+                                    drawOnChartArea: true,
+                                    drawTicks: true
                                 }
                             },
-                            plugins: {
-                                legend: {
+                            x: {
+                                title: {
                                     display: true,
-                                    position: 'top',
-                                    labels: {
-                                        font: {
-                                            size: 12
-                                        },
-                                        color: colors.textColor // Use defined color
-                                    }
+                                    text: 'تاریخ',
+                                    color: colors.textColor // Use defined color
                                 },
-                                tooltip: {
-                                    mode: 'index',
-                                    intersect: false,
-                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                    titleColor: colors.textColor,
-                                    bodyColor: colors.textColor,
-                                    borderColor: colors.borderColor,
-                                    borderWidth: 1,
-                                    padding: 10
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.02)',
+                                    drawBorder: true,
+                                    drawOnChartArea: false,
+                                    drawTicks: true
                                 }
                             }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 12
+                                    },
+                                    color: colors.textColor // Use defined color
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                titleColor: colors.textColor,
+                                bodyColor: colors.textColor,
+                                borderColor: colors.borderColor,
+                                borderWidth: 1,
+                                padding: 10
+                            }
                         }
-                    });
-                })();
-                {% endif %}
-                {% endfor %}
-            </script>
-        {% else %}
-            <div class="card text-center">
-                <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
-            </div>
-        {% endif %}
-    </div>
-</body>
-</html>
+                    }
+                });
+            })();
+            {% endif %}
+            {% endfor %}
+        </script>
+    {% else %}
+        <div class="card text-center">
+            <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
+        </div>
+    {% endif %}
+{% endblock %}

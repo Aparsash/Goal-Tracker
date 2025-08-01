@@ -1,47 +1,25 @@
 <!-- templates/login.html -->
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ورود</title>
-    <!-- Load Parastoo font from local files -->
-    <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" type="text/css" />
-    <!-- Load custom styles -->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
-</head>
-<body data-theme="light">
-    <div class="container">
-        <h1>ورود به حساب کاربری</h1>
-        
-        <!-- Display flash messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash-message {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+{% extends "base.html" %}
 
-        <div class="card">
-            <form method="POST">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.email.label }}
-                    {{ form.email(class="form-control") }}
-                </div>
-                <div class="form-group">
-                    {{ form.password.label }}
-                    {{ form.password(class="form-control") }}
-                </div>
-                {{ form.submit(class="btn btn-primary w-100") }}
-            </form>
-        </div>
-        <div class="mt-20">
-            <p>حساب کاربری ندارید؟ <a href="{{ url_for('register') }}">ثبت‌نام کنید</a></p>
-        </div>
+{% block title %}ورود{% endblock %}
+{% block header %}ورود به حساب کاربری{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="form-control") }}
+            </div>
+            {{ form.submit(class="btn btn-primary w-100") }}
+        </form>
     </div>
-</body>
-</html>
+    <div class="mt-20">
+        <p>حساب کاربری ندارید؟ <a href="{{ url_for('register') }}">ثبت‌نام کنید</a></p>
+    </div>
+{% endblock %}
