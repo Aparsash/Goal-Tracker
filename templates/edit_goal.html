@@ -1,0 +1,51 @@
+<!-- templates/edit_goal.html -->
+{% extends "base.html" %}
+
+{% block title %}ویرایش هدف{% endblock %}
+{% block header %}ویرایش هدف: {{ goal.title }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.title.label }}
+                {{ form.title(class="form-control") }}
+                {% if form.title.errors %}
+                    {% for error in form.title.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.total_units.label }}
+                {{ form.total_units(class="form-control") }}
+                {% if form.total_units.errors %}
+                    {% for error in form.total_units.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.daily_target.label }}
+                {{ form.daily_target(class="form-control") }}
+                {% if form.daily_target.errors %}
+                    {% for error in form.daily_target.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.target_date.label }}
+                {{ form.target_date(class="form-control") }}
+                {% if form.target_date.errors %}
+                    {% for error in form.target_date.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {{ form.submit(class="btn btn-primary w-100", value="به‌روزرسانی هدف") }}
+        </form>
+    </div>
+    <a href="{{ url_for('index') }}" class="btn mt-20">بازگشت به صفحه اصلی</a>
+{% endblock %}

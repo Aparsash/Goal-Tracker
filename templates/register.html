@@ -1,0 +1,44 @@
+<!-- templates/register.html -->
+{% extends "base.html" %}
+
+{% block title %}ثبت‌نام{% endblock %}
+{% block header %}ثبت‌نام حساب کاربری{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="form-control") }}
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password2.label }}
+                {{ form.password2(class="form-control") }}
+                {% if form.password2.errors %}
+                    {% for error in form.password2.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {{ form.submit(class="btn btn-success w-100") }}
+        </form>
+    </div>
+    <div class="mt-20">
+        <p>قبلاً ثبت‌نام کرده‌اید؟ <a href="{{ url_for('login') }}">وارد شوید</a></p>
+    </div>
+{% endblock %}
