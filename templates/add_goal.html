@@ -5,77 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ایجاد هدف جدید</title>
-    <!-- Load Parastoo font from CDN -->
-    <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" type="text/css" /> 
-    <style>
-        body { 
-            font-family: 'Parastoo', Tahoma, Arial, sans-serif; 
-            direction: rtl; 
-            text-align: center; 
-            background-color: #f5f7fa; 
-            margin: 0; 
-            padding: 20px; 
-        }
-        .container { 
-            max-width: 500px; 
-            margin: 50px auto; 
-            background-color: white; 
-            border-radius: 10px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            padding: 30px; 
-            text-align: right; 
-        }
-        h1 { color: #2c3e50; text-align: center; }
-        form { margin-top: 20px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], input[type="number"], input[type="date"] { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            box-sizing: border-box; 
-            font-size: 1em; 
-            direction: rtl; 
-        }
-        input[type="number"] { direction: ltr; text-align: right; }
-        button { 
-            width: 100%; 
-            padding: 12px; 
-            background-color: #27ae60; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 1em; 
-        }
-        button:hover { background-color: #219653; }
-        .flash-messages { margin-bottom: 20px; }
-        .flash-message { 
-            padding: 10px; 
-            border-radius: 5px; 
-            margin-bottom: 10px; 
-        }
-        .flash-message.error { 
-            background-color: #f8d7da; 
-            color: #721c24; 
-            border: 1px solid #f5c6cb; 
-        }
-        .back-link { 
-            display: block; 
-            text-align: center; 
-            margin-top: 20px; 
-            color: #3498db; 
-            text-decoration: none; 
-        }
-        .back-link:hover { text-decoration: underline; }
-    </style>
+    <!-- Load Parastoo font from local files -->
+    <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Load custom styles -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
 </head>
-<body>
+<body data-theme="light">
     <div class="container">
         <h1>ایجاد هدف جدید</h1>
         
-        <!-- نمایش پیام‌های فلش -->
+        <!-- Display flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flash-messages">
@@ -86,47 +25,49 @@
             {% endif %}
         {% endwith %}
 
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.title.label }}
-                {{ form.title }}
-                {% if form.title.errors %}
-                    {% for error in form.title.errors %}
-                        <div style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <div class="form-group">
-                {{ form.total_units.label }}
-                {{ form.total_units }}
-                {% if form.total_units.errors %}
-                    {% for error in form.total_units.errors %}
-                        <div style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <div class="form-group">
-                {{ form.daily_target.label }}
-                {{ form.daily_target }}
-                {% if form.daily_target.errors %}
-                    {% for error in form.daily_target.errors %}
-                        <div style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <div class="form-group">
-                {{ form.target_date.label }}
-                {{ form.target_date }}
-                {% if form.target_date.errors %}
-                    {% for error in form.target_date.errors %}
-                        <div style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            {{ form.submit }}
-        </form>
-        <a href="{{ url_for('index') }}" class="back-link">بازگشت به صفحه اصلی</a>
+        <div class="card">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.title.label }}
+                    {{ form.title(class="form-control") }}
+                    {% if form.title.errors %}
+                        {% for error in form.title.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.total_units.label }}
+                    {{ form.total_units(class="form-control") }}
+                    {% if form.total_units.errors %}
+                        {% for error in form.total_units.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.daily_target.label }}
+                    {{ form.daily_target(class="form-control") }}
+                    {% if form.daily_target.errors %}
+                        {% for error in form.daily_target.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.target_date.label }}
+                    {{ form.target_date(class="form-control") }}
+                    {% if form.target_date.errors %}
+                        {% for error in form.target_date.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {{ form.submit(class="btn btn-primary w-100") }}
+            </form>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn mt-20">بازگشت به صفحه اصلی</a>
     </div>
 </body>
 </html>
