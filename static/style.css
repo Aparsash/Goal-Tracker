@@ -377,3 +377,32 @@ input:focus, select:focus, textarea:focus {
     border-radius: 5px; /* Rounded corners */
     box-shadow: 0 2px 5px var(--shadow-color); /* Small shadow */
 }
+/* === Stats Grid === */
+.stats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.stat-box {
+    flex: 1 1 calc(20% - 15px);
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    transition: box-shadow 0.3s ease;
+}
+.stat-box:hover {
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+.stat-label {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+.stat-value {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--text-primary);
+}

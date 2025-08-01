@@ -3,11 +3,9 @@
 
 {% block title %}گزارش پیشرفت{% endblock %}
 {% block header %}📊 گزارش پیشرفت شما{% endblock %}
-
 {% block extra_head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
-
 {% block content %}
     <!-- Sticky Button Bar -->
     <div class="sticky-button-bar">
@@ -21,7 +19,7 @@
             <div class="card-header report-header">
                 <h2 class="card-title report-title">{{ goal.title }}</h2>
             </div>
-            
+
             <div class="stats-grid mb-20"> <!-- Using grid for stats -->
                 <div class="stat-box">
                     <div class="stat-label">هدف کل</div>
@@ -99,11 +97,11 @@
                 // Create chart
                 new Chart(ctx, {
                     type: 'line',
-                     {
-                         labels: labels,
+                    data: {
+                        labels: labels,
                         datasets: [{
                             label: 'پیشرفت روزانه',
-                             values,
+                             data: values, // Corrected to use 'data'
                             borderColor: colors.lineColor, // Use defined color
                             backgroundColor: colors.fillColor, // Use defined color
                             fill: true,
