@@ -406,3 +406,55 @@ input:focus, select:focus, textarea:focus {
     font-weight: bold;
     color: var(--text-primary);
 }
+
+/* === Error Messages === */
+.error-message {
+    color: #e74c3c; /* Red color for errors */
+    font-size: 0.85em;
+    margin-top: 5px;
+    text-align: right; /* RTL alignment */
+    font-weight: bold;
+}
+
+/* === Forms & Inputs (Updated) === */
+form {
+    text-align: right; /* RTL form alignment */
+}
+.form-group {
+    margin-bottom: 20px;
+    text-align: right; /* Ensure labels/inputs align correctly within group */
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+input[type="email"], input[type="password"], input[type="text"], input[type="number"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    font-family: inherit;
+    background-color: var(--bg-card); /* Input background matches card */
+    color: var(--text-primary);
+}
+/* Highlight invalid inputs */
+input:invalid {
+    border-color: #e74c3c; /* Red border for invalid inputs */
+}
+input:focus:invalid {
+    outline: 2px solid #e74c3c; /* Red outline for invalid inputs on focus */
+    border-color: #e74c3c;
+}
+input[type="number"], input[type="date"] {
+    direction: ltr;
+    text-align: right;
+}
+/* Focus state for inputs */
+input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--primary-light);
+    border-color: var(--primary-light);
+}

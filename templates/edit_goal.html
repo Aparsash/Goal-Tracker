@@ -1,9 +1,7 @@
 <!-- templates/edit_goal.html -->
 {% extends "base.html" %}
-
 {% block title %}ویرایش هدف{% endblock %}
 {% block header %}ویرایش هدف: {{ goal.title }}{% endblock %}
-
 {% block content %}
     <div class="card">
         <form method="POST">
@@ -13,7 +11,7 @@
                 {{ form.title(class="form-control") }}
                 {% if form.title.errors %}
                     {% for error in form.title.errors %}
-                        <div class="error-message">{{ error }}</div>
+                        <div class="error-message" style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
                     {% endfor %}
                 {% endif %}
             </div>
@@ -22,7 +20,7 @@
                 {{ form.total_units(class="form-control") }}
                 {% if form.total_units.errors %}
                     {% for error in form.total_units.errors %}
-                        <div class="error-message">{{ error }}</div>
+                        <div class="error-message" style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
                     {% endfor %}
                 {% endif %}
             </div>
@@ -31,7 +29,7 @@
                 {{ form.daily_target(class="form-control") }}
                 {% if form.daily_target.errors %}
                     {% for error in form.daily_target.errors %}
-                        <div class="error-message">{{ error }}</div>
+                        <div class="error-message" style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
                     {% endfor %}
                 {% endif %}
             </div>
@@ -40,7 +38,7 @@
                 {{ form.target_date(class="form-control") }}
                 {% if form.target_date.errors %}
                     {% for error in form.target_date.errors %}
-                        <div class="error-message">{{ error }}</div>
+                        <div class="error-message" style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
                     {% endfor %}
                 {% endif %}
             </div>
