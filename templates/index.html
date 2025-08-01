@@ -60,10 +60,10 @@
                 </div>
 
                 <!-- دکمه‌های عملیات -->
-                <div class="goal-actions">
-                    <a href="{{ url_for('edit_goal', goal_id=goal.id) }}">✏️ ویرایش</a>
+                <div class="actions">
+                    <a href="{{ url_for('edit_goal', goal_id=goal.id) }}" class="btn btn-secondary">✏️ ویرایش</a>
                     <form method="POST" action="{{ url_for('delete_goal', goal_id=goal.id) }}" style="display: inline;" onsubmit="return confirm('آیا از حذف این هدف مطمئن هستید؟');">
-                        <button type="submit">🗑️ حذف</button>
+                        <button type="submit" class="btn btn-danger">🗑️ حذف</button>
                     </form>
                 </div>
             </div>
