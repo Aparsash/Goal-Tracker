@@ -5,18 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Daily Progress Tracker{% endblock %}</title>
-    <!-- Load Parastoo font from local files -->
-    <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" type="text/css" />
+
+    <!-- Load Parastoo font -->
+    <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" />
+    
     <!-- Load custom styles -->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
+
+   
+
     {% block extra_head %}{% endblock %}
 </head>
 <body data-theme="light">
+    <nav class="top-nav">
+        <a href="{{ url_for('index') }}">🏠 صفحه اصلی</a>
+        <a href="{{ url_for('report') }}">📊 گزارش</a>
+        <a href="{{ url_for('profile') }}">👤 پروفایل</a>
+        <a href="{{ url_for('logout') }}" class="logout-link">🚪 خروج</a>
+    </nav>
+
     <div class="container">
         <a href="{{ url_for('logout') }}" class="logout-link">خروج</a>
         <h1>{% block header %}{% endblock %}</h1>
-        
-        <!-- Display flash messages -->
+
+        <!-- Flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flash-messages">
@@ -29,5 +41,7 @@
 
         {% block content %}{% endblock %}
     </div>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>

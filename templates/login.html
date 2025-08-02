@@ -18,6 +18,7 @@
             <div class="form-group">
                 {{ form.password.label }}
                 {{ form.password(class="form-control") }}
+                {% if form.password.description %}<small class="text-muted">{{ form.password.description }}</small>{% endif %}
                 {% if form.password.errors %}
                     {% for error in form.password.errors %}
                         <div class="error-message" style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>

@@ -393,3 +393,41 @@ input:focus, select:focus, textarea:focus {
 .top-nav a.profile-link:hover {
     background-color: #2980b9; /* Darker blue on hover */
 }
+
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: none;
+}
+
+.modal-overlay.active {
+  display: block;
+}
+
+.modal-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  animation: pop-in 0.2s ease-out;
+  direction: rtl;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-overlay.active .modal-box {
+  opacity: 1;
+  visibility: visible;
+}
+

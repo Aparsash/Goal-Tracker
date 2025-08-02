@@ -1,22 +1,55 @@
 <!-- templates/delete_account.html -->
 {% extends "base.html" %}
-{% block title %}حذف حساب کاربری{% endblock %}
-{% block header %}⚠️ حذف حساب کاربری{% endblock %}
+
 {% block content %}
-    <div class="card">
-        <p class="text-center"><strong>هشدار:</strong> این عمل غیر قابل بازگشت است. تمام اطلاعات حساب شما (اهداف، پیشرفت‌ها) برای همیشه حذف خواهند شد.</p>
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.confirm.label }}
-                {{ form.confirm(class="form-control") }}
-                {% if form.confirm.errors %}
-                    {% for error in form.confirm.errors %}
-                        <div class="error-message" style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            {{ form.submit(class="btn btn-danger w-100", value="حذف حساب کاربری") }}
-        </form>
+<h2 class="text-center text-danger">⚠️ حذف حساب کاربری</h2>
+<p class="text-center text-muted">برای حذف اکانت خود، روی دکمه زیر کلیک کنید. پنجره تأیید نمایش داده خواهد شد.</p>
+
+<div class="text-center mt-4">
+    <button id="deleteBtn" class="btn btn-danger">حذف حساب کاربری</button>
+</div>
+
+<div id="deleteModal" class="modal-overlay">
+    <div class="modal-box">
+        <p>آیا مطمئن هستید که می‌خواهید حساب خود را حذف کنید؟</p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">لغو</button>
+            <button class="btn btn-danger" onclick="confirmDelete()">بله، حذف کن</button>
+        </div>
     </div>
-    <a href="{{ url_for('profile') }}" class="btn mt-20">باز
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteBtn = document.getElementById('deleteBtn');
+    const deleteModal = document.getElementById('deleteModal');
+
+    if (deleteBtn && deleteModal) {
+        deleteBtn.addEventListener('click', () => {
+            deleteModal.classList.add('active');
+        });
+    }
+
+    window.closeModal = function () {
+        deleteModal.classList.remove('active');
+    };
+
+    window.confirmDelete = function () {
+        fetch('/confirm_delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            if (res.ok) {
+                window.location.href = '/login';
+            } else {
+                alert('مشکلی در حذف حساب پیش آمد.');
+            }
+        });
+    };
+});
+</script>
+{% endblock %}

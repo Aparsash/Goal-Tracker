@@ -27,6 +27,7 @@
             <div class="form-group">
                 {{ form.password.label }}
                 {{ form.password(class="form-control") }}
+                {% if form.password.description %}<small class="text-muted">{{ form.password.description }}</small>{% endif %}
                 {% if form.password.errors %}
                     {% for error in form.password.errors %}
                         <div class="error-message">{{ error }}</div>
@@ -34,10 +35,10 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                {{ form.password2.label }}
-                {{ form.password2(class="form-control") }}
-                {% if form.password2.errors %}
-                    {% for error in form.password2.errors %}
+                {{ form.confirm_password.label }}
+                {{ form.confirm_password(class="form-control") }}
+                {% if form.confirm_password.errors %}
+                    {% for error in form.confirm_password.errors %}
                         <div class="error-message">{{ error }}</div>
                     {% endfor %}
                 {% endif %}

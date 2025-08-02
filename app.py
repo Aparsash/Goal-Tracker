@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+# app.py
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from flask_migrate import Migrate  # Enable migrations
+from flask_migrate import Migrate
 
 from forms import LoginForm, RegistrationForm, GoalForm, UpdateProfileForm, ChangePasswordForm, DeleteAccountForm
 from datetime import date, datetime
@@ -11,17 +12,23 @@ from models import db, User, Goal, ProgressEntry
 
 app = Flask(__name__)
 
-# Configure application
+# Configuration
 app.config['SECRET_KEY'] = '30662e4a93fe55b325d02a0b0b3cd0ac'
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "site.db")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize database and migrations
-db.init_app(app)
-migrate = Migrate(app, db)  # Use Alembic to manage migrations
+@app.before_request
+def enforce_foreign_keys():
+    from sqlalchemy import text
+    db.session.execute(text('PRAGMA foreign_keys=ON'))
 
-# Configure login manager
+
+# Initialize extensions
+db.init_app(app)
+migrate = Migrate(app, db)
+
+# Login setup
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'لطفاً وارد شوید تا بتوانید به این صفحه دسترسی پیدا کنید.'
@@ -30,8 +37,7 @@ login_manager.login_message = 'لطفاً وارد شوید تا بتوانید 
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# === Authentication Routes ===
-
+# Authentication
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -40,13 +46,15 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and user.check_password(form.password.data):
+        if not user:
+            flash('اکانتی با این ایمیل وجود ندارد.', 'error')
+        elif user and user.check_password(form.password.data):
             login_user(user)
             flash('با موفقیت وارد شدید.', 'success')
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
-            flash('ایمیل یا رمز عبور اشتباه است.', 'error')
+            flash('رمز عبور اشتباه است.', 'error')
 
     return render_template('login.html', form=form)
 
@@ -75,34 +83,45 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-# === Main Dashboard ===
-
+# Dashboard
 @app.route('/')
 @login_required
 def index():
     today = date.today().strftime('%Y-%m-%d')
     return render_template('index.html', goals=current_user.goals, today_date=today)
 
-# === Goal Management ===
+# Goal Management
+import jdatetime
 
 @app.route('/add_goal', methods=['GET', 'POST'])
 @login_required
 def add_goal():
     form = GoalForm()
-    if form.validate_on_submit():
-        goal = Goal(
-            title=form.title.data,
-            total_units=form.total_units.data,
-            daily_target=form.daily_target.data,
-            target_date=form.target_date.data,
-            user_id=current_user.id
-        )
-        db.session.add(goal)
-        db.session.commit()
-        flash(f'هدف "{goal.title}" با موفقیت ایجاد شد.', 'success')
-        return redirect(url_for('index'))
+    if request.method == 'POST':
+        # دریافت مقدار تاریخ شمسی به‌صورت رشته
+        shamsi_date_str = request.form.get("target_date")
+        try:
+            year, month, day = map(int, shamsi_date_str.split('-'))
+            miladi_date = jdatetime.date(year, month, day).togregorian()
+        except:
+            flash("تاریخ وارد شده نامعتبر است.", "error")
+            return redirect(url_for("add_goal"))
+
+        if form.validate_on_submit():
+            goal = Goal(
+                title=form.title.data,
+                total_units=form.total_units.data,
+                daily_target=form.daily_target.data,
+                target_date=miladi_date,  # تاریخ به صورت date واقعی
+                user_id=current_user.id
+            )
+            db.session.add(goal)
+            db.session.commit()
+            flash(f'هدف "{goal.title}" با موفقیت ایجاد شد.', 'success')
+            return redirect(url_for('index'))
 
     return render_template('add_goal.html', form=form)
+
 
 @app.route('/edit_goal/<int:goal_id>', methods=['GET', 'POST'])
 @login_required
@@ -129,8 +148,7 @@ def delete_goal(goal_id):
     flash(f'هدف "{goal_title}" با موفقیت حذف شد.', 'success')
     return redirect(url_for('index'))
 
-# === Progress Submission ===
-
+# Progress Submission
 @app.route('/submit_progress/<int:goal_id>', methods=['POST'])
 @login_required
 def submit_progress(goal_id):
@@ -170,8 +188,7 @@ def submit_progress(goal_id):
 
     return redirect(url_for('index'))
 
-# === Report Route ===
-
+# Report
 @app.route('/report')
 @login_required
 def report():
@@ -195,29 +212,23 @@ def report():
 
     return render_template('report.html', goals=user_goals)
 
-# === User Profile ===
-
-# === User Profile Management Routes (NEW) ===
-
+# Profile
 @app.route('/profile')
 @login_required
 def profile():
-    """Display user profile page"""
     return render_template('profile.html')
 
 @app.route('/profile/update', methods=['GET', 'POST'])
 @login_required
 def update_profile():
-    """Update user profile information (name, email)"""
     form = UpdateProfileForm(obj=current_user)
     if form.validate_on_submit():
-        # Check if email is already taken by another user
         if form.email.data != current_user.email:
             existing_user = User.query.filter_by(email=form.email.data).first()
             if existing_user:
                 flash('این ایمیل قبلاً توسط کاربر دیگری استفاده شده است.', 'error')
                 return render_template('update_profile.html', form=form)
-        
+
         current_user.name = form.name.data
         current_user.email = form.email.data
         db.session.commit()
@@ -231,38 +242,34 @@ def update_profile():
 @app.route('/profile/change_password', methods=['GET', 'POST'])
 @login_required
 def change_password():
-    """Change user password"""
     form = ChangePasswordForm()
     if form.validate_on_submit():
         if not current_user.check_password(form.old_password.data):
             flash('رمز عبور فعلی اشتباه است.', 'error')
-            return render_template('change_password.html', form=form)
-        
-        current_user.set_password(form.new_password.data)
-        db.session.commit()
-        flash('رمز عبور شما با موفقیت تغییر کرد.', 'success')
-        return redirect(url_for('profile'))
+        elif form.new_password.data != form.confirm_password.data:
+            flash('رمز جدید و تکرار آن مطابقت ندارند.', 'error')
+        else:
+            current_user.set_password(form.new_password.data)
+            db.session.commit()
+            flash('رمز عبور شما با موفقیت تغییر کرد.', 'success')
+            return redirect(url_for('profile'))
     return render_template('change_password.html', form=form)
 
-@app.route('/profile/delete', methods=['GET', 'POST'])
+
+@app.route('/profile/delete')
 @login_required
 def delete_account():
-    """Delete user account"""
-    form = DeleteAccountForm()
-    if form.validate_on_submit():
-        if form.confirm.data == 'حذف حساب':
-            user_id = current_user.id
-            username = current_user.name or current_user.email
-            logout_user()
-            # Delete user and all related data (goals, progress entries)
-            User.query.filter_by(id=user_id).delete()
-            db.session.commit()
-            flash(f'حساب کاربری {username} با موفقیت حذف شد.', 'success')
-            return redirect(url_for('login'))
-        else:
-            flash("برای تأیید، عبارت 'حذف حساب' را وارد کنید.", 'error')
-    return render_template('delete_account.html', form=form)
+    return render_template('delete_account.html')
 
+@app.route('/confirm_delete', methods=['POST'])
+@login_required
+def confirm_delete():
+    user_id = current_user.id
+    username = current_user.name or current_user.email
+    logout_user()
+    User.query.filter_by(id=user_id).delete()
+    db.session.commit()
+    return jsonify({'message': f'حساب کاربری {username} حذف شد.'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
