@@ -13,6 +13,11 @@
     </div>
     <!-- End Sticky Button Bar -->
 
+    <div class="sticky-button-bar">
+    <a href="{{ url_for('index') }}" class="btn mt-20 mb-20">بازگشت به صفحه اصلی</a>
+    <a href="{{ url_for('profile') }}" class="btn mt-20 mb-20">👤 پروفایل</a> <!-- لینک جدید -->
+    </div>
+
     {% if goals %}
         {% for goal in goals %}
         <div class="card report-card">

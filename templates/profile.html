@@ -1,0 +1,19 @@
+<!-- templates/profile.html -->
+{% extends "base.html" %}
+{% block title %}پروفایل کاربری{% endblock %}
+{% block header %}👤 پروفایل کاربری{% endblock %}
+{% block content %}
+    <div class="card">
+        <h2>اطلاعات حساب</h2>
+        <ul class="list-unstyled">
+            <li class="detail-item"><span class="detail-label">نام:</span> {{ current_user.name or 'ثبت نشده' }}</li>
+            <li class="detail-item"><span class="detail-label">ایمیل:</span> {{ current_user.email }}</li>
+        </ul>
+    </div>
+
+    <div class="actions">
+        <a href="{{ url_for('update_profile') }}" class="btn btn-primary">ویرایش اطلاعات</a>
+        <a href="{{ url_for('change_password') }}" class="btn btn-secondary">تغییر رمز عبور</a>
+        <a href="{{ url_for('delete_account') }}" class="btn btn-danger">حذف حساب کاربری</a>
+    </div>
+{% endblock %}

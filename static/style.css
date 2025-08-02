@@ -377,84 +377,19 @@ input:focus, select:focus, textarea:focus {
     border-radius: 5px; /* Rounded corners */
     box-shadow: 0 2px 5px var(--shadow-color); /* Small shadow */
 }
-/* === Stats Grid === */
-.stats-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-.stat-box {
-    flex: 1 1 calc(20% - 15px);
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: 0 2px 8px var(--shadow-color);
-    transition: box-shadow 0.3s ease;
-}
-.stat-box:hover {
-    box-shadow: 0 4px 12px var(--shadow-color);
-}
-.stat-label {
-    font-size: 0.9em;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-}
-.stat-value {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--text-primary);
-}
-
-/* === Error Messages === */
+/* === Error Message Styling (NEW) === */
 .error-message {
-    color: #e74c3c; /* Red color for errors */
+    color: var(--error-text); /* Use error text color */
     font-size: 0.85em;
     margin-top: 5px;
     text-align: right; /* RTL alignment */
     font-weight: bold;
 }
 
-/* === Forms & Inputs (Updated) === */
-form {
-    text-align: right; /* RTL form alignment */
+.top-nav a.profile-link {
+    background-color: #3498db; /* Blue for profile link */
 }
-.form-group {
-    margin-bottom: 20px;
-    text-align: right; /* Ensure labels/inputs align correctly within group */
-}
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: var(--text-primary);
-}
-input[type="email"], input[type="password"], input[type="text"], input[type="number"], input[type="date"], select, textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 1em;
-    font-family: inherit;
-    background-color: var(--bg-card); /* Input background matches card */
-    color: var(--text-primary);
-}
-/* Highlight invalid inputs */
-input:invalid {
-    border-color: #e74c3c; /* Red border for invalid inputs */
-}
-input:focus:invalid {
-    outline: 2px solid #e74c3c; /* Red outline for invalid inputs on focus */
-    border-color: #e74c3c;
-}
-input[type="number"], input[type="date"] {
-    direction: ltr;
-    text-align: right;
-}
-/* Focus state for inputs */
-input:focus, select:focus, textarea:focus {
-    outline: 2px solid var(--primary-light);
-    border-color: var(--primary-light);
+
+.top-nav a.profile-link:hover {
+    background-color: #2980b9; /* Darker blue on hover */
 }

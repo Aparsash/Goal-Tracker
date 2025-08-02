@@ -1,0 +1,31 @@
+<!-- templates/update_profile.html -->
+{% extends "base.html" %}
+{% block title %}ویرایش اطلاعات{% endblock %}
+{% block header %}ویرایش اطلاعات{% endblock %}
+{% block content %}
+    <div class="card">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.name.label }}
+                {{ form.name(class="form-control") }}
+                {% if form.name.errors %}
+                    {% for error in form.name.errors %}
+                        <div class="error-message" style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <div class="error-message" style="color: red; font-size: 0.8em; margin-top: 5px;">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {{ form.submit(class="btn btn-primary w-100", value="به‌روزرسانی اطلاعات") }}
+        </form>
+    </div>
+    <a href="{{ url_for('profile') }}" class="btn mt-20">بازگشت به پروفایل</a>
+{% endblock %}
