@@ -20,7 +20,6 @@
                         <div>📊 میانگین روزانه: <strong>{{ "%.2f"|format(goal.average_daily_progress) }} واحد</strong></div>
                     </div>
 
-
                     <!-- Progress Bar -->
                     <div class="progress-bar-background mt-20">
                         <div class="progress-bar-fill" style="width: {{ goal.completion_percentage }}%;">
@@ -39,72 +38,77 @@
             </div>
             {% endfor %}
         </div>
-
-        <script>
-        function toggleAccordion(element) {
-            element.classList.toggle('active');
-            const body = element.nextElementSibling;
-            body.style.display = body.style.display === 'block' ? 'none' : 'block';
-        }
-
-        const colors = {
-            lineColor: '#0ABAB5',
-            fillColor: 'rgba(10,186,181,0.1)',
-            textColor: '#2c3e50'
-        };
-
-        {% for goal in goals %}
-        {% if goal.progress_entries and goal.progress_entries|length > 0 %}
-        (function() {
-            const ctx = document.getElementById('chart_{{ goal.id }}');
-            if (!ctx) return;
-            const entries = [
-                {% for e in goal.progress_entries|sort(attribute='date') %}
-                { date: '{{ e.date }}', value: {{ e.value }} },
-                {% endfor %}
-            ];
-            const labels = entries.map(e => e.date);
-            const data = entries.map(e => e.value);
-
-            new Chart(ctx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'پیشرفت روزانه',
-                        data: data,
-                        borderColor: colors.lineColor,
-                        backgroundColor: colors.fillColor,
-                        fill: true,
-                        tension: 0.25,
-                        pointRadius: 3,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: 'مقدار پیشرفت' }
-                        },
-                        x: {
-                            title: { display: true, text: 'تاریخ' }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-        })();
-        {% endif %}
-        {% endfor %}
-        </script>
     {% else %}
         <div class="card text-center">
-            <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href=\"{{ url_for('add_goal') }}\">اولین هدف خود را ایجاد کنید</a>.</p>
+            <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <!-- ✅ لود کردن Chart.js از CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+    function toggleAccordion(element) {
+        element.classList.toggle('active');
+        const body = element.nextElementSibling;
+        body.style.display = body.style.display === 'block' ? 'none' : 'block';
+    }
+
+    const colors = {
+        lineColor: '#0ABAB5',
+        fillColor: 'rgba(10,186,181,0.1)',
+        textColor: '#2c3e50'
+    };
+
+    {% for goal in goals %}
+    {% if goal.progress_entries and goal.progress_entries|length > 0 %}
+    (function() {
+        const ctx = document.getElementById('chart_{{ goal.id }}');
+        if (!ctx) return;
+        const entries = [
+            {% for e in goal.progress_entries|sort(attribute='date') %}
+            { date: '{{ e.date }}', value: {{ e.value }} },
+            {% endfor %}
+        ];
+        const labels = entries.map(e => e.date);
+        const data = entries.map(e => e.value);
+
+        new Chart(ctx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'پیشرفت روزانه',
+                    data: data,
+                    borderColor: colors.lineColor,
+                    backgroundColor: colors.fillColor,
+                    fill: true,
+                    tension: 0.25,
+                    pointRadius: 3,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'مقدار پیشرفت' }
+                    },
+                    x: {
+                        title: { display: true, text: 'تاریخ' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    })();
+    {% endif %}
+    {% endfor %}
+    </script>
 {% endblock %}

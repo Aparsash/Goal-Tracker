@@ -81,8 +81,10 @@ body {
 /* === Headings === */
 h1 {
     color: var(--primary-color);
-    margin-bottom: 20px;
+    margin-bottom: 10px; 
+    margin-top: 5px;    
 }
+
 /* === Links & Buttons === */
 a {
     color: var(--primary-color);
@@ -630,3 +632,65 @@ nav.top-nav {
     text-decoration: none;
 
 }
+
+/* ==== Logo Styles in Top Navigation ==== */
+.top-nav .logo {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
+    margin-right: 10px;
+    text-decoration: none;
+}
+.top-nav a.logo-icon {
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 15px 0 10px;
+}
+
+
+.logo-text-img {
+    height: 36px;
+    width: auto;
+    vertical-align: middle;
+}
+
+
+.logo-icon img.logo-img {
+    height: 100px;
+    width: auto;
+    margin-left: 15px;
+    vertical-align: middle;
+    background-color: transparent; 
+    transform: translateY(-4px);
+}
+
+/* Responsive Logo For Mobile*/
+@media (max-width: 768px) {
+    .logo-icon img.logo-img {
+        height: 150px; /* مناسب برای موبایل */
+        margin-left: 8px;
+    }
+}
+
+.login-logo {
+    text-align: center;
+    margin-top: 0px;       /* ✅ کاهش فاصله از بالا */
+    margin-bottom: 0px;     /* ✅ فاصله‌ی لوگو تا فرم */
+}
+
+.login-logo img.big-logo {
+    height: 180px;          /* ✅ اگر خواستی کمی بزرگ‌تر هم باشه */
+    width: 180px;
+    margin-bottom: 0px;     /* ✅ کاهش فاصله زیر لوگو */
+}
+
+/* صفحه‌های لاگین و ثبت‌نام – بالا آوردن فرم */
+body.login-page .container {
+    margin-top: 0px;       /* ✅ فرم رو بیشتر بیار بالا */
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+

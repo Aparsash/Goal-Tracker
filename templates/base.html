@@ -1,34 +1,46 @@
-<!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Daily Progress Tracker{% endblock %}</title>
+    <title>{% block title %}گزارش پیشرفت{% endblock %}</title>
 
-    <!-- Load Parastoo font -->
+    <!-- ✅ Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='images/Logo.png') }}" type="image/png">
+
+    <!-- ✅ Load Parastoo font -->
     <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" />
 
-    <!-- Load custom styles -->
+    <!-- ✅ Custom styles -->
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    
     {% block extra_head %}{% endblock %}
 </head>
-<body data-theme="light">
-    <!-- ✅ Redesigned Top Navigation -->
-    <nav class="top-nav">
-        <a href="{{ url_for('index') }}">🏠 صفحه اصلی</a>
-        <a href="{{ url_for('report') }}" class="report-link">📊 گزارش</a>
-        <a href="{{ url_for('profile') }}" class="profile-link">👤 پروفایل</a>
-        <a href="{{ url_for('logout') }}" class="btn btn-danger">🚪 خروج</a>
-    </nav>
+<body data-theme="light" class="{% if request.endpoint in ['login', 'register'] %}login-page{% endif %}">
+
+    <!-- ✅ Navigation bar with logo icon only -->
+    {% if request.endpoint not in ['login', 'register'] %}
+        <!-- ✅ Navigation Bar (در همه صفحات به جز login و register) -->
+        <nav class="top-nav">
+            <a href="{{ url_for('index') }}" class="logo-icon" title="صفحه اصلی">
+                <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Goal Tracker Logo" class="logo-img">
+            </a>
+            <a href="{{ url_for('index') }}">🏠 صفحه اصلی</a>
+            <a href="{{ url_for('report') }}" class="report-link">📊 گزارش</a>
+            <a href="{{ url_for('profile') }}" class="profile-link">👤 پروفایل</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">🚪 خروج</a>
+        </nav>
+    {% else %}
+        <!-- ✅ صفحه login یا register – فقط لوگو بزرگ -->
+        <div class="login-logo">
+            <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Goal Tracker Logo" class="big-logo">
+        </div>
+    {% endif %}
 
     <div class="container">
-        <!-- ✅ Removed duplicate logout text -->
         <h1>{% block header %}{% endblock %}</h1>
 
-        <!-- Flash messages -->
+        <!-- پیام‌های فلش -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flash-messages">
@@ -42,6 +54,7 @@
         {% block content %}{% endblock %}
     </div>
 
+    <!-- ✅ Load custom JS or libraries per-page -->
     {% block scripts %}{% endblock %}
 </body>
 </html>
