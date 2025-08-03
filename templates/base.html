@@ -8,24 +8,24 @@
 
     <!-- Load Parastoo font -->
     <link href="{{ url_for('static', filename='fonts/Parastoo.css') }}" rel="stylesheet" />
-    
+
     <!-- Load custom styles -->
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
-
-   
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {% block extra_head %}{% endblock %}
 </head>
 <body data-theme="light">
+    <!-- ✅ Redesigned Top Navigation -->
     <nav class="top-nav">
         <a href="{{ url_for('index') }}">🏠 صفحه اصلی</a>
-        <a href="{{ url_for('report') }}">📊 گزارش</a>
-        <a href="{{ url_for('profile') }}">👤 پروفایل</a>
-        <a href="{{ url_for('logout') }}" class="logout-link">🚪 خروج</a>
+        <a href="{{ url_for('report') }}" class="report-link">📊 گزارش</a>
+        <a href="{{ url_for('profile') }}" class="profile-link">👤 پروفایل</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">🚪 خروج</a>
     </nav>
 
     <div class="container">
-        <a href="{{ url_for('logout') }}" class="logout-link">خروج</a>
+        <!-- ✅ Removed duplicate logout text -->
         <h1>{% block header %}{% endblock %}</h1>
 
         <!-- Flash messages -->

@@ -3,14 +3,14 @@
 {% block title %}ثبت پیشرفت{% endblock %}
 {% block header %}ثبت پیشرفت روزانه{% endblock %}
 {% block content %}
-    <!-- Sticky Button Bar -->
-    <div class="sticky-button-bar">
-        <div class="top-nav">
-            <a href="{{ url_for('add_goal') }}" class="add-goal-link">➕ افزودن هدف جدید</a>
-            <a href="{{ url_for('report') }}" class="report-link">📊 مشاهده گزارش</a>
-        </div>
-    </div>
-    <!-- End Sticky Button Bar -->
+    <!-- Add Goal Button-->
+    
+            <a href="{{ url_for('add_goal') }}" class="fab" title="افزودن هدف">
+                <span class="icon">➕</span>
+                <span class="text">افزودن هدف</span>
+            </a>
+        
+    <!-- End Add Goal Button -->
     {% if goals %}
         {% for goal in goals %}
         <div class="card goal-card">
@@ -36,12 +36,18 @@
                 </form>
             </div>
             <!-- Action buttons -->
-            <div class="actions">
-                <a href="{{ url_for('edit_goal', goal_id=goal.id) }}" class="btn btn-secondary"><i class="fas fa-edit"></i> ویرایش</a>
-                <form method="POST" action="{{ url_for('delete_goal', goal_id=goal.id) }}" style="display: inline;" onsubmit="return confirm('آیا از حذف این هدف مطمئن هستید؟');">
-                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> حذف</button>
+            <div class="goal-actions">
+                <a href="{{ url_for('edit_goal', goal_id=goal.id) }}" class="btn-action">
+                    ✏️ ویرایش
+                </a>
+
+                <form method="POST" action="{{ url_for('delete_goal', goal_id=goal.id) }}" onsubmit="return confirm('آیا از حذف این هدف مطمئن هستید؟');">
+                    <button type="submit" class="btn-action danger">
+                        🗑️ حذف
+                    </button>
                 </form>
             </div>
+
         </div>
         {% endfor %}
     {% else %}

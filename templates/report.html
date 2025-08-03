@@ -1,188 +1,110 @@
-<!-- templates/report.html -->
 {% extends "base.html" %}
 
 {% block title %}گزارش پیشرفت{% endblock %}
 {% block header %}📊 گزارش پیشرفت شما{% endblock %}
-{% block extra_head %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{% endblock %}
+
 {% block content %}
-    <!-- Sticky Button Bar -->
-    <div class="sticky-button-bar">
-        <a href="{{ url_for('index') }}" class="btn mt-20 mb-20">بازگشت به صفحه اصلی</a>
-    </div>
-    <!-- End Sticky Button Bar -->
-
-    <div class="sticky-button-bar">
-    <a href="{{ url_for('index') }}" class="btn mt-20 mb-20">بازگشت به صفحه اصلی</a>
-    <a href="{{ url_for('profile') }}" class="btn mt-20 mb-20">👤 پروفایل</a> <!-- لینک جدید -->
-    </div>
-
     {% if goals %}
-        {% for goal in goals %}
-        <div class="card report-card">
-            <div class="card-header report-header">
-                <h2 class="card-title report-title">{{ goal.title }}</h2>
-            </div>
-
-            <div class="stats-grid mb-20"> <!-- Using grid for stats -->
-                <div class="stat-box">
-                    <div class="stat-label">هدف کل</div>
-                    <div class="stat-value">{{ goal.total_units }} واحد</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">پیشرفت کل</div>
-                    <div class="stat-value">{{ "%.2f"|format(goal.total_progress) }} واحد</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">درصد تکمیل</div>
-                    <div class="stat-value">{{ "%.1f"|format(goal.completion_percentage) }}%</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">روزهای فعال</div>
-                    <div class="stat-value">{{ goal.active_days }} روز</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">میانگین روزانه</div>
-                    <div class="stat-value">{{ "%.2f"|format(goal.average_daily_progress) }} واحد</div>
-                </div>
-            </div>
-
-            <div class="progress-container">
-                <div class="progress-label">
-                    <span>پیشرفت:</span>
-                    <span>{{ "%.1f"|format(goal.completion_percentage) }}%</span>
-                </div>
-                <div class="progress-bar-background">
-                    <div class="progress-bar-fill" style="width: {{ goal.completion_percentage }}%;"></div>
-                </div>
-            </div>
-
-            {% if goal.progress_entries %}
-            <div class="chart-container">
-                <canvas id="chart_{{ goal.id }}"></canvas>
-            </div>
-            {% else %}
-            <p class="text-center text-placeholder">هنوز هیچ پیشرفتی برای این هدف ثبت نشده است.</p>
-            {% endif %}
-        </div>
-        {% endfor %}
-
-        <!-- JavaScript section for all charts -->
-        <script>
-            // Define theme colors (should match :root in style.css)
-            const themeColors = {
-                light: {
-                    lineColor: '#0ABAB5', // --primary-color
-                    fillColor: 'rgba(10, 186, 181, 0.1)', // --chart-fill-color
-                    textColor: '#2c3e50', // --text-primary
-                    borderColor: '#e1e8ed' // --border-color
-                }
-            };
-            // Get current theme (assuming 'light' for now)
-            const currentTheme = 'light'; // You can dynamically get this from body.dataset.theme if needed
-            const colors = themeColors[currentTheme];
-
+        <div class="accordion">
             {% for goal in goals %}
-            {% if goal.progress_entries %}
-            (function() {
-                const ctx = document.getElementById('chart_{{ goal.id }}').getContext('2d');
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>🎯 {{ goal.title }}</span>
+                    <span>٪{{ "%.1f"|format(goal.completion_percentage) }}</span>
+                </div>
+                <div class="accordion-body">
+                    <div class="goal-stats four-in-one">
+                        <div>🎯 هدف کل: <strong>{{ "%.1f"|format(goal.total_units) }} واحد</strong></div>
+                        <div>✏️ پیشرفت کل: <strong>{{ "%.2f"|format(goal.total_progress) }} واحد</strong></div>
+                        <div>📅 روزهای فعال: <strong>{{ goal.active_days }} روز</strong></div>
+                        <div>📊 میانگین روزانه: <strong>{{ "%.2f"|format(goal.average_daily_progress) }} واحد</strong></div>
+                    </div>
 
-                // Sort entries by date
-                const sortedEntries = [
-                    {% for entry in goal.progress_entries|sort(attribute='date') %}
-                    { date: '{{ entry.date }}', value: {{ entry.value }} },
-                    {% endfor %}
-                ];
 
-                // Extract labels and values
-                const labels = sortedEntries.map(e => e.date);
-                const values = sortedEntries.map(e => e.value);
+                    <!-- Progress Bar -->
+                    <div class="progress-bar-background mt-20">
+                        <div class="progress-bar-fill" style="width: {{ goal.completion_percentage }}%;">
+                            {{ "%.1f"|format(goal.completion_percentage) }}٪
+                        </div>
+                    </div>
 
-                // Create chart
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'پیشرفت روزانه',
-                             data: values, // Corrected to use 'data'
-                            borderColor: colors.lineColor, // Use defined color
-                            backgroundColor: colors.fillColor, // Use defined color
-                            fill: true,
-                            tension: 0.2,
-                            borderWidth: 2,
-                            pointRadius: 3,
-                            pointHoverRadius: 5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'مقدار پیشرفت',
-                                    color: colors.textColor // Use defined color
-                                },
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)',
-                                    drawBorder: true,
-                                    drawOnChartArea: true,
-                                    drawTicks: true
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'تاریخ',
-                                    color: colors.textColor // Use defined color
-                                },
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.02)',
-                                    drawBorder: true,
-                                    drawOnChartArea: false,
-                                    drawTicks: true
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    font: {
-                                        size: 12
-                                    },
-                                    color: colors.textColor // Use defined color
-                                }
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                titleColor: colors.textColor,
-                                bodyColor: colors.textColor,
-                                borderColor: colors.borderColor,
-                                borderWidth: 1,
-                                padding: 10
-                            }
-                        }
-                    }
-                });
-            })();
-            {% endif %}
+                    {% if goal.progress_entries and goal.progress_entries|length > 0 %}
+                    <div class="chart-container">
+                        <canvas id="chart_{{ goal.id }}"></canvas>
+                    </div>
+                    {% else %}
+                    <p class="text-placeholder">هنوز هیچ پیشرفتی برای این هدف ثبت نشده است.</p>
+                    {% endif %}
+                </div>
+            </div>
             {% endfor %}
+        </div>
+
+        <script>
+        function toggleAccordion(element) {
+            element.classList.toggle('active');
+            const body = element.nextElementSibling;
+            body.style.display = body.style.display === 'block' ? 'none' : 'block';
+        }
+
+        const colors = {
+            lineColor: '#0ABAB5',
+            fillColor: 'rgba(10,186,181,0.1)',
+            textColor: '#2c3e50'
+        };
+
+        {% for goal in goals %}
+        {% if goal.progress_entries and goal.progress_entries|length > 0 %}
+        (function() {
+            const ctx = document.getElementById('chart_{{ goal.id }}');
+            if (!ctx) return;
+            const entries = [
+                {% for e in goal.progress_entries|sort(attribute='date') %}
+                { date: '{{ e.date }}', value: {{ e.value }} },
+                {% endfor %}
+            ];
+            const labels = entries.map(e => e.date);
+            const data = entries.map(e => e.value);
+
+            new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'پیشرفت روزانه',
+                        data: data,
+                        borderColor: colors.lineColor,
+                        backgroundColor: colors.fillColor,
+                        fill: true,
+                        tension: 0.25,
+                        pointRadius: 3,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'مقدار پیشرفت' }
+                        },
+                        x: {
+                            title: { display: true, text: 'تاریخ' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        })();
+        {% endif %}
+        {% endfor %}
         </script>
     {% else %}
         <div class="card text-center">
-            <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
+            <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href=\"{{ url_for('add_goal') }}\">اولین هدف خود را ایجاد کنید</a>.</p>
         </div>
     {% endif %}
 {% endblock %}
