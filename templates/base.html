@@ -20,7 +20,7 @@
 
     <!-- ✅ Navigation bar with logo icon only -->
     {% if request.endpoint not in ['login', 'register'] %}
-        <!-- ✅ Navigation Bar (در همه صفحات به جز login و register) -->
+        <!-- ✅ Navigation Bar (In all pages exept login and register) -->
         <nav class="top-nav">
             <a href="{{ url_for('index') }}" class="logo-icon" title="صفحه اصلی">
                 <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Goal Tracker Logo" class="logo-img">

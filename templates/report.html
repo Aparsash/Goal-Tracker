@@ -46,8 +46,15 @@
 {% endblock %}
 
 {% block scripts %}
-    <!-- ✅ لود کردن Chart.js از CDN -->
+    <!--load chart.js from first jsDelivr and second unpkg  -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        if (typeof Chart === 'undefined') {
+            var fallbackScript = document.createElement('script');
+            fallbackScript.src = "https://unpkg.com/chart.js";
+            document.head.appendChild(fallbackScript);
+        }
+    </script>
 
     <script>
     function toggleAccordion(element) {
@@ -112,3 +119,4 @@
     {% endfor %}
     </script>
 {% endblock %}
+
