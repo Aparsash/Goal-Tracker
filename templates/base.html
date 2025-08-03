@@ -40,18 +40,21 @@
     <div class="container">
         <h1>{% block header %}{% endblock %}</h1>
 
-        <!-- پیام‌های فلش -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash-message {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+        <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            {% if category in ['success', 'error'] %}
+                                <div class="flash-message {{ category }}">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-        {% block content %}{% endblock %}
+{% block content %}{% endblock %}
+
     </div>
 
     <!-- ✅ Load custom JS or libraries per-page -->
