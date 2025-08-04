@@ -1,19 +1,23 @@
+# --- Virtual environment ---
 myproject_env/
+
+# --- Local config & secrets ---
+.env
+
+# --- Project documentation (optional to ignore) ---
 Project-structure.txt
 ColorCodes.txt
 
-
-# Byte-compiled / optimized / DLL files
+# --- Byte-compiled / optimized / DLL files ---
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Flask stuff
+# --- Flask instance folder ---
 instance/
-.env
 
-# Database
+# --- Local database ---
 site.db
-
-#ّFonts 
-static/fonts/
+# --- Static files ---
+Static/fonts/
+Static/images/

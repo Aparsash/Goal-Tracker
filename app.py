@@ -3,17 +3,18 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_migrate import Migrate
-
 from forms import LoginForm, RegistrationForm, GoalForm, UpdateProfileForm, ChangePasswordForm, DeleteAccountForm
 from datetime import date, datetime
 import os
-
 from models import db, User, Goal, ProgressEntry
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
 # Configuration
-app.config['SECRET_KEY'] = '30662e4a93fe55b325d02a0b0b3cd0ac'
+import os
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback-secret')
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "site.db")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
