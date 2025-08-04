@@ -2,55 +2,59 @@
 {% extends "base.html" %}
 {% block title %}ثبت پیشرفت{% endblock %}
 {% block header %}ثبت پیشرفت روزانه{% endblock %}
+
 {% block content %}
-    <!-- Add Goal Button-->
-    
-            <a href="{{ url_for('add_goal') }}" class="fab" title="افزودن هدف">
-                <span class="icon">➕</span>
-                <span class="text">افزودن هدف</span>
-            </a>
-        
-    <!-- End Add Goal Button -->
-    {% if goals %}
-        {% for goal in goals %}
-        <div class="card goal-card">
-            <div class="card-header goal-header">
-                <h2 class="card-title goal-title">{{ goal.title }}</h2>
-            </div>
-            <div class="goal-details">
-                <p>هدف کل: {{ goal.total_units }} واحد</p>
-                <p>مقدار روزانه: {{ "%.2f"|format(goal.daily_target) }} واحد</p>
-            </div>
-            <!-- Progress form for this goal -->
-            <div class="progress-form">
-                <form method="POST" action="{{ url_for('submit_progress', goal_id=goal.id) }}">
-                    <div class="form-group">
-                        <label for="date_{{ goal.id }}">تاریخ:</label>
-                        <input type="date" id="date_{{ goal.id }}" name="date" value="{{ today_date }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="value_{{ goal.id }}">مقدار پیشرفت (واحد):</label>
-                        <input type="number" id="value_{{ goal.id }}" name="value" step="any" placeholder="0" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">ثبت پیشرفت</button>
-                </form>
-            </div>
-            <!-- Action buttons -->
-            <div class="goal-actions">
-                <a href="{{ url_for('edit_goal', goal_id=goal.id) }}" class="btn-action">
-                    ✏️ ویرایش
-                </a>
+<!-- ✅ Add Goal Button -->
+<a href="{{ url_for('add_goal') }}" class="fab" title="افزودن هدف">
+    <span class="icon">➕</span>
+    <span class="text">افزودن هدف</span>
+</a>
 
-                <form method="POST" action="{{ url_for('delete_goal', goal_id=goal.id) }}" onsubmit="return confirm('آیا از حذف این هدف مطمئن هستید؟');">
-                    <button type="submit" class="btn-action danger">
-                        🗑️ حذف
-                    </button>
-                </form>
-            </div>
-
+{% if goals %}
+<!-- ✅ Accordion Wrapper -->
+<div class="accordion">
+    {% for goal in goals %}
+    <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+            <span>🎯 {{ goal.title }}</span>
+            <span>🎯 هدف کل: {{ goal.total_units }} واحد</span>
         </div>
-        {% endfor %}
-    {% else %}
-        <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
-    {% endif %}
+        <div class="accordion-body">
+            <p>📈 مقدار روزانه: {{ "%.2f"|format(goal.daily_target) }} واحد</p>
+
+            <form method="POST" action="{{ url_for('submit_progress', goal_id=goal.id) }}">
+                <div class="form-group">
+                    <label for="date_{{ goal.id }}">تاریخ:</label>
+                    <input type="date" id="date_{{ goal.id }}" name="date" value="{{ today_date }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="value_{{ goal.id }}">مقدار پیشرفت (واحد):</label>
+                    <input type="number" id="value_{{ goal.id }}" name="value" step="any" placeholder="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">ثبت پیشرفت</button>
+            </form>
+
+            <div class="goal-actions">
+                <a href="{{ url_for('edit_goal', goal_id=goal.id) }}" class="btn-action">✏️ ویرایش</a>
+                <form method="POST" action="{{ url_for('delete_goal', goal_id=goal.id) }}" onsubmit="return confirm('آیا از حذف این هدف مطمئن هستید؟');">
+                    <button type="submit" class="btn-action danger">🗑️ حذف</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <p>شما هنوز هیچ هدفی تعریف نکرده‌اید. <a href="{{ url_for('add_goal') }}">اولین هدف خود را ایجاد کنید</a>.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleAccordion(element) {
+        element.classList.toggle('active');
+        const body = element.nextElementSibling;
+        body.style.display = body.style.display === 'block' ? 'none' : 'block';
+    }
+</script>
 {% endblock %}

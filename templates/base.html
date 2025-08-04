@@ -58,6 +58,15 @@
     </div>
 
     <!-- ✅ Load custom JS or libraries per-page -->
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+        <script>
+        function toggleAccordion(element) {
+            element.classList.toggle('active');
+            const body = element.nextElementSibling;
+            body.style.display = body.style.display === 'block' ? 'none' : 'block';
+        }
+        </script>
+    {% endblock %}
+
 </body>
 </html>

@@ -674,19 +674,18 @@ nav.top-nav {
 
 .login-logo {
     text-align: center;
-    margin-top: 0px;       /* ✅ کاهش فاصله از بالا */
-    margin-bottom: 0px;     /* ✅ فاصله‌ی لوگو تا فرم */
+    margin-top: 0px;       
+    margin-bottom: 0px;     
 }
 
 .login-logo img.big-logo {
-    height: 180px;          /* ✅ اگر خواستی کمی بزرگ‌تر هم باشه */
+    height: 180px;          
     width: 180px;
-    margin-bottom: 0px;     /* ✅ کاهش فاصله زیر لوگو */
+    margin-bottom: 0px;    
 }
 
-/* صفحه‌های لاگین و ثبت‌نام – بالا آوردن فرم */
 body.login-page .container {
-    margin-top: 0px;       /* ✅ فرم رو بیشتر بیار بالا */
+    margin-top: 0px;      
     max-width: 480px;
     margin-left: auto;
     margin-right: auto;
