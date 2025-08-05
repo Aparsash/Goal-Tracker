@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from forms import LoginForm, RegistrationForm, GoalForm, UpdateProfileForm, ChangePasswordForm, DeleteAccountForm
 from datetime import date, datetime
 import os
+import traceback
 from models import db, User, Goal, ProgressEntry
 from dotenv import load_dotenv
 load_dotenv()
@@ -66,12 +67,18 @@ def register():
         if existing_user:
             flash('این ایمیل قبلاً ثبت‌نام کرده است.', 'error')
         else:
-            user = User(email=form.email.data, name=form.name.data)
-            user.set_password(form.password.data)
-            db.session.add(user)
-            db.session.commit()
-            flash('ثبت‌نام با موفقیت انجام شد. لطفاً وارد شوید.', 'success')
-            return redirect(url_for('login'))
+            try:
+                user = User(email=form.email.data, name=form.name.data)
+                user.set_password(form.password.data)
+                db.session.add(user)
+                db.session.commit()
+                flash('ثبت‌نام با موفقیت انجام شد. لطفاً وارد شوید.', 'success')
+                return redirect(url_for('login'))
+            except Exception as e:
+                db.session.rollback()
+                print("🔥 Registration error:", e)
+                traceback.print_exc()  # لاگ کامل خطا
+                flash('خطایی در ثبت‌نام رخ داده است.', 'error')
 
     return render_template('register.html', form=form)
 
