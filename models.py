@@ -12,7 +12,7 @@ class User(UserMixin, db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
     email = Column(String(120), unique=True, nullable=False)
-    password_hash = Column(String(128), nullable=False)
+    password_hash = Column(String(512), nullable=False)
 
     goals = relationship('Goal', backref='user', lazy=True, cascade='all, delete-orphan')
 
