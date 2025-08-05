@@ -21,3 +21,14 @@ site.db
 # --- Static files ---
 Static/fonts/
 Static/images/
+
+
+
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.log
+*.tmp
+.DS_Store
