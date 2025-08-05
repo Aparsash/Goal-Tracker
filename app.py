@@ -272,5 +272,13 @@ def confirm_delete():
     db.session.commit()
     return jsonify({'message': f'حساب کاربری {username} حذف شد.'}), 200
 
+
+# 👇 Temporary route to initialize the database
+@app.route('/init')
+def init_db_route():
+    db.create_all()
+    return '✅ Tables created successfully!'
+
+
 if __name__ == '__main__':
     app.run(debug=True)
