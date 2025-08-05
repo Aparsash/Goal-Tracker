@@ -287,6 +287,17 @@ def init_db():
         return f"❌ Error creating tables: {e}"
 
 
+@app.route('/reset-db')
+def reset_db():
+    try:
+        from models import db, User, Goal, ProgressEntry
+        db.drop_all()
+        db.create_all()
+        return "🔥 All tables dropped and re-created successfully."
+    except Exception as e:
+        return f"❌ Error All tables dropped and re-created unsuccessfully: {e}"
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
