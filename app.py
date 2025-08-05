@@ -11,7 +11,6 @@ from models import db, User, Goal, ProgressEntry
 from dotenv import load_dotenv
 load_dotenv()
 
-app = Flask(__name__)
 
 # Configuration
 import os
