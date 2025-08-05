@@ -3,7 +3,6 @@ myproject_env/
 
 # --- Local config & secrets ---
 .env
-requirements.txt
 # --- Project documentation (optional to ignore) ---
 Project-structure.txt
 ColorCodes.txt
