@@ -17,9 +17,6 @@ instance/
 
 # --- Local database ---
 site.db
-# --- Static files ---
-Static/fonts/
-Static/images/
 
 
 

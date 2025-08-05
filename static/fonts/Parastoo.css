@@ -1,0 +1,25 @@
+/* static/fonts/Parastoo.css */
+
+@font-face {
+    font-family: 'Parastoo';
+    src: url('./Parastoo-Bold.eot'); /* Bold version */
+    src: url('./Parastoo-Bold.eot?#iefix') format('embedded-opentype'),
+         url('./Parastoo-Bold.woff2') format('woff2'), /* Modern browsers */
+         url('./Parastoo-Bold.woff') format('woff'),    /* Modern browsers */
+         url('./Parastoo-Bold.ttf') format('truetype'); /* Older browsers */
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Parastoo';
+    src: url('./Parastoo.eot'); /* Regular version */
+    src: url('./Parastoo.eot?#iefix') format('embedded-opentype'),
+         url('./Parastoo.woff2') format('woff2'), /* Modern browsers */
+         url('./Parastoo.woff') format('woff'),    /* Modern browsers */
+         url('./Parastoo.ttf') format('truetype'); /* Older browsers */
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
