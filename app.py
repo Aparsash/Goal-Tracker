@@ -19,10 +19,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-@app.before_request
-def enforce_foreign_keys():
-    from sqlalchemy import text
-    db.session.execute(text('PRAGMA foreign_keys=ON'))
 
 
 # Initialize extensions
@@ -275,9 +271,14 @@ def confirm_delete():
 
 # 👇 Temporary route to initialize the database
 @app.route('/init')
-def init_db_route():
-    db.create_all()
-    return '✅ Tables created successfully!'
+def init_db():
+    try:
+        from models import db, User, Goal, ProgressEntry
+        db.create_all()
+        return "✅ Tables created successfully."
+    except Exception as e:
+        return f"❌ Error creating tables: {e}"
+
 
 
 if __name__ == '__main__':
